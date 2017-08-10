@@ -1,4 +1,4 @@
-# HTTP request/response recording library for PHP
+# HTTP request/response recording and mock library for PHP
 
 <!-- [![Latest Version](https://img.shields.io/packagist/v/korchasa/blueprint.svg?style=flat-square)](https://packagist.org/packages/korchasa/blueprint)
 [![Build Status](https://travis-ci.org/korchasa/blueprint.svg?style=flat-square)](https://travis-ci.org/korchasa/blueprint)
@@ -27,6 +27,7 @@ class MyAwesomeApiClientTest extends TestCase
 
     public function setUp()
     {
+        $this->useVhsCassettesFrom('vhs_cassettes');
         $client = new MyAwesomeApiClient();
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
         $this->client = $client;
@@ -34,12 +35,34 @@ class MyAwesomeApiClientTest extends TestCase
 
     public function testSuccessSignUp()
     {
-        $userId = $this->client->signUp('Cheburashka', 'Passw0rd');
-        $this->assertValidVhs();
-        $this->assertGreaterThan(0, $userId);
+        $this->assertVhs('signUp', function() {
+            $userId = $this->client->signUp('Cheburashka', 'Passw0rd');
+            $this->assertGreaterThan(0, $userId);
+        });
     }
 }
 ```
+
+Cassette ``./tests/vhs_cassettes/my_awesome_api_client_test.json`` content
+```json
+[
+  {
+    "request": {
+      "url": "http://myawesomeapi.com"
+    },
+    "response": {
+      "status_code": 200,
+      "headers": {
+        "Content-Type": "text/json"
+      },
+      "body": {
+        "id": 1
+      }
+    }
+  }
+]
+```
+
 
 CLI commands:
 ```
@@ -48,15 +71,21 @@ CLI commands:
 ./vendor/bin/vhs show AcceptanceTest - show cassette
 ```
 
-Configuration (phpunit.xml):
+Configuration:
+
+By phpunit.xml:
 ```xml
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd">
     <!-- ... -->
     <php>
-        <env name="vhs.cassettes_dir" value="./tests/vhs_cassettes"/>
+        <env name="vhs.mock" value="true"/>
     </php>
 </phpunit>
+```
 
+By env vars:
+```bash
+vhs.mock=true ./vendor/bin/phpunit 
 ```

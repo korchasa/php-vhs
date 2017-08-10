@@ -14,6 +14,7 @@ class MyAwesomeApiClientTest extends TestCase
 
     public function setUp()
     {
+        $this->useVhsCassettesFrom('vhs_cassettes');
         $client = new MyAwesomeApiClient();
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
         $this->client = $client;
@@ -21,8 +22,9 @@ class MyAwesomeApiClientTest extends TestCase
 
     public function testSuccessSignUp()
     {
-        $userId = $this->client->signUp('Cheburashka', 'Passw0rd');
-        $this->assertValidVhs();
-        $this->assertGreaterThan(0, $userId);
+        $this->assertVhs('signUp', function() {
+            $userId = $this->client->signUp('Cheburashka', 'Passw0rd');
+            $this->assertGreaterThan(0, $userId);
+        });
     }
 }

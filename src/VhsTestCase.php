@@ -19,7 +19,12 @@ trait VhsTestCase
 //        };
     }
 
-    protected function assertValidVhs()
+    protected function assertVhs(callable $test, string $cassette = null)
+    {
+
+    }
+
+    protected function useVhsCassettesFrom(string ...$dirs)
     {
 
     }
