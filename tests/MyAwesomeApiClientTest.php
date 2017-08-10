@@ -22,7 +22,7 @@ class MyAwesomeApiClientTest extends TestCase
 
     public function testSuccessSignUp()
     {
-        $this->assertVhs('signUp', function() {
+        $this->assertVhs('signUp', function () {
             $userId = $this->client->signUp('Cheburashka', 'Passw0rd');
             $this->assertGreaterThan(0, $userId);
         });

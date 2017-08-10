@@ -80,7 +80,7 @@ By phpunit.xml:
     xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd">
     <!-- ... -->
     <php>
-        <env name="vhs.mock" value="true"/>
+        <env name="VHS_MOCK" value="true"/>
     </php>
 </phpunit>
 ```
