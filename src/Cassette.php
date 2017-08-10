@@ -6,11 +6,6 @@ use Psr\Http\Message\ResponseInterface;
 class Cassette
 {
     /**
-     * @var string
-     */
-    private $file;
-
-    /**
      * @var RequestInterface
      */
     protected $request;
@@ -24,9 +19,20 @@ class Cassette
      */
     protected $isEmpty;
 
-    public function __construct(string $dir, string $name, bool $isEmpty)
+    /**
+     * @var string
+     */
+    protected $dir;
+
+    /**
+     * @var string
+     */
+    protected $name;
+
+    public function __construct(string $dir, string $name)
     {
-        $this->isEmpty = $isEmpty;
+        $this->dir = $dir;
+        $this->name = $name;
     }
 
     /**
@@ -49,15 +55,47 @@ class Cassette
         return $this;
     }
 
-    public function toText()
+    public function getRecord($withHeaders = false): string
     {
-        return json_encode([
+        $record = [
             'request' => [
-                'uri' => (string) $this->request->getUri()
+                'uri' => (string) $this->request->getUri(),
+                'method' => $this->request->getMethod(),
+                'body' => json_decode($this->request->getBody())
+                            ?: $this->request->getBody()
             ],
             'response' => [
-                'status' => $this->response->getStatusCode()
+                'status' => $this->response->getStatusCode(),
+                'body' => json_decode($this->response->getBody()->getContents())
+                            ?: $this->response->getBody()->getContents()
             ]
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        ];
+
+        if ($withHeaders) {
+            $record['request']['headers'] = $this->request->getHeaders();
+            $record['response']['headers'] = $this->response->getHeaders();
+        }
+
+        return json_encode($record, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+
+    public function isEmpty(): bool
+    {
+        return !file_exists($this->path());
+    }
+
+    public function save()
+    {
+        file_put_contents($this->path(), $this->getRecord());
+    }
+
+    protected function path(): string
+    {
+        return $this->dir.DIRECTORY_SEPARATOR.$this->name.'.json';
+    }
+
+    public function readRecord()
+    {
+        return file_get_contents($this->path());
     }
 }

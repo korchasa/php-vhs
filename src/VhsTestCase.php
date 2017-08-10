@@ -3,6 +3,7 @@
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use korchasa\matched\JsonConstraint;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -18,21 +19,11 @@ trait VhsTestCase
      */
     protected $currentCassette;
 
-    protected function connectVhs(Client $client)
+    protected function connectVhs(string $dir, Client $client)
     {
+        $this->useVhsCassettesFrom($dir);
         $config = $client->getConfig();
         $config['handler'] = $this->connectToStack($config['handler']);
-
-//        return function (callable $handler) {
-//            return function (
-//                RequestInterface $request,
-//                array $options
-//            ) use ($handler, $header, $value) {
-//                $request = $request->withHeader($header, $value);
-//                return $handler($request, $options);
-//            };
-//        };
-
         return new Client($config);
     }
 
@@ -53,22 +44,19 @@ trait VhsTestCase
 
     protected function assertVhs(string $cassette, callable $test)
     {
-        $cassette = new Cassette($this->cassettesDir, $cassette)
-        if (!$this->isCassetteExist($cassette)) {
-            $this->currentCassette = new Cassette($isEmpty = true);
-        }
+        $this->currentCassette = new Cassette($this->cassettesDir, $cassette);
+        $oldCassette = new Cassette($this->cassettesDir, $cassette);
         $test();
-        var_dump($this->currentCassette->toText());
+        if ($oldCassette->isEmpty()) {
+            $this->currentCassette->save();
+        } else {
+            $constraint = new JsonConstraint($oldCassette->readRecord());
+            static::assertThat($this->currentCassette->getRecord(), $constraint);
+        }
     }
 
     protected function useVhsCassettesFrom($dir)
     {
         $this->cassettesDir = $dir;
-    }
-
-    private function isCassetteExist($name)
-    {
-        foreach ($this->)
-        return false;
     }
 }
