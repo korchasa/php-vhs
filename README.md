@@ -53,7 +53,8 @@ Cassette ``./tests/vhs_cassettes/my_awesome_api_client_test.json`` content
     "response": {
       "status_code": 200,
       "headers": {
-        "Content-Type": "text/json"
+        "Content-Length": "***",
+        "Content-Type": "text/json"        
       },
       "body": {
         "id": 1
