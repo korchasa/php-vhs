@@ -1,7 +1,7 @@
 # HTTP request/response recording and mock library for PHP
 
 1. Add ```VhsTestCase``` to test
-1. Surround client call with assertValidVhs()
+1. Surround client call with ```assertValidVhs()```
 1. Run test to record cassette (test will be incomplete)
 1. Replace dynamic values in cassette with ```***``` symbol, and remove unnecessary values 
 1. Run test  
