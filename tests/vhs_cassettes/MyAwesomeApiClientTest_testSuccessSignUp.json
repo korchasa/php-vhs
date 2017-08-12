@@ -10,7 +10,6 @@
     "response": {
         "status": 200,
         "body": {
-            "data": "[\"Cheburashka\",\"Passw0rd\"]",
             "json": [
                 "Cheburashka",
                 "Passw0rd"

@@ -89,7 +89,7 @@ class Cassette
         file_put_contents($this->path(), $this->getRecord());
     }
 
-    protected function path(): string
+    public function path(): string
     {
         return $this->dir.DIRECTORY_SEPARATOR.$this->name.'.json';
     }

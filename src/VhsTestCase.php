@@ -6,11 +6,12 @@ use GuzzleHttp\Middleware;
 use korchasa\matched\JsonConstraint;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use ReflectionClass;
 
 trait VhsTestCase
 {
     /**
-     * @var string[]
+     * @var string
      */
     protected $cassettesDir;
 
@@ -19,15 +20,15 @@ trait VhsTestCase
      */
     protected $currentCassette;
 
-    protected function connectVhs(string $dir, Client $client)
+    protected function connectVhs(Client $client, string $dir = null): Client
     {
-        $this->useVhsCassettesFrom($dir);
+        $this->useVhsCassettesFrom($this->resolveCassettesDir($dir));
         $config = $client->getConfig();
         $config['handler'] = $this->connectToStack($config['handler']);
         return new Client($config);
     }
 
-    private function connectToStack(HandlerStack $stack)
+    private function connectToStack(HandlerStack $stack): HandlerStack
     {
         $stack->push(Middleware::mapRequest(function (RequestInterface $request) {
             $this->currentCassette->setRequest($request);
@@ -42,8 +43,10 @@ trait VhsTestCase
         return $stack;
     }
 
-    protected function assertVhs(string $cassette, callable $test)
+    protected function assertVhs(callable $test, string $cassette = null)
     {
+        $cassette = $cassette
+            ?: $this->resolveCassette(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]);
         $this->currentCassette = new Cassette($this->cassettesDir, $cassette);
         $oldCassette = new Cassette($this->cassettesDir, $cassette);
         $test();
@@ -55,8 +58,23 @@ trait VhsTestCase
         }
     }
 
-    protected function useVhsCassettesFrom($dir)
+    private function resolveCassette($callFromTest): string
+    {
+        return substr($callFromTest['class'], strrpos($callFromTest['class'], '\\') + 1) .'_'.$callFromTest['function'];
+    }
+
+    public function useVhsCassettesFrom($dir)
     {
         $this->cassettesDir = $dir;
+    }
+
+    private function resolveCassettesDir($givenDir): string
+    {
+        $dir = $givenDir ?: getenv("VHS_DIR");
+        if (!$dir) {
+            $reflector = new ReflectionClass(get_called_class());
+            $dir = dirname($reflector->getFileName()).'/vhs_cassettes';
+        }
+        return $dir;
     }
 }

@@ -1,0 +1,20 @@
+{
+    "request": {
+        "uri": "http:\/\/httpbin.org\/post",
+        "method": "POST",
+        "body": [
+            "Cheburashka",
+            "Passw0rd"
+        ]
+    },
+    "response": {
+        "status": 200,
+        "body": {
+            "json": [
+                "Cheburashka",
+                "Passw0rd"
+            ],
+            "origin": "***"
+        }
+    }
+}
