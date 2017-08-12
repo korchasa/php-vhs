@@ -1,20 +1,25 @@
 {
     "request": {
-        "uri": "http:\/\/httpbin.org\/post",
-        "method": "POST",
-        "body": [
-            "Cheburashka",
-            "Passw0rd"
-        ]
+        "uri": "https:\/\/www.mediawiki.org\/w\/api.php?action=query&format=json&curtimestamp=1&prop=info&list=&titles=API",
+        "method": "GET",
+        "body": {}
     },
     "response": {
         "status": 200,
         "body": {
-            "json": [
-                "Cheburashka",
-                "Passw0rd"
-            ],
-            "origin": "***"
+            "query": {
+                "pages": {
+                    "55332": {
+                        "pageid": 55332,
+                        "ns": 0,
+                        "title": "API",
+                        "contentmodel": "wikitext",
+                        "pagelanguage": "en",
+                        "pagelanguagehtmlcode": "en",
+                        "pagelanguagedir": "ltr"
+                    }
+                }
+            }
         }
     }
 }

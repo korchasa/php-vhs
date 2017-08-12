@@ -10,20 +10,20 @@ class VhsTestCaseTest extends TestCase
     use VhsTestCase;
     use AssertMatchedTrait;
 
-    /** @var MyAwesomeApiClient */
-    private $client;
+    /** @var MyAwesomeWikiClient */
+    private $wikiClient;
 
     public function setUp()
     {
-        $client = new MyAwesomeApiClient();
+        $client = new MyAwesomeWikiClient();
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
-        $this->client = $client;
+        $this->wikiClient = $client;
     }
 
     public function testAssertVhs()
     {
         $this->assertVhs(function () {
-            $userId = $this->client->signUp('Cheburashka', 'Passw0rd');
+            $userId = $this->wikiClient->getPageInfo();
             $this->assertGreaterThan(0, $userId);
         });
 
@@ -37,7 +37,7 @@ class VhsTestCaseTest extends TestCase
     public function testAssertVhsWithCustomCassetteName()
     {
         $this->assertVhs(function () {
-            $userId = $this->client->signUp('Cheburashka', 'Passw0rd');
+            $userId = $this->wikiClient->getPageInfo();
             $this->assertGreaterThan(0, $userId);
         }, 'testCustomName');
 
@@ -50,22 +50,17 @@ class VhsTestCaseTest extends TestCase
 
     public function testAssertVhsFail()
     {
-        $this->assertVhs(function () {
-            $userId = $this->client->signUp('Cheburashka', 'Passw0rd');
-            $this->assertGreaterThan(0, $userId);
-        });
-
         try {
             $this->assertVhs(function () {
-                $userId = $this->client->signUp('Cheburashka', 'WRONG PASSWORD');
+                $userId = $this->wikiClient->getPageInfo();
                 $this->assertGreaterThan(0, $userId);
             });
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertNotFalse(strpos(
-                $e->getMessage(),
-                "-'Passw0rd'\n+'WRONG PASSWORD'"
-            ));
+            $this->assertStringMatched(
+                "***-'2017-08-12T15:33:52Z'***",
+                $e->getMessage()
+            );
         }
     }
 }

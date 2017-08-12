@@ -3,24 +3,24 @@
 use korchasa\Vhs\VhsTestCase;
 use PHPUnit\Framework\TestCase;
 
-class MyAwesomeApiClientTest extends TestCase
+class MyAwesomeWikiClientTest extends TestCase
 {
     use VhsTestCase;
 
-    /** @var MyAwesomeApiClient */
-    private $client;
+    /** @var MyAwesomeWikiClient */
+    private $wikiClient;
 
     public function setUp()
     {
-        $client = new MyAwesomeApiClient();
+        $client = new MyAwesomeWikiClient();
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
-        $this->client = $client;
+        $this->wikiClient = $client;
     }
 
     public function testSuccessSignUp()
     {
         $this->assertVhs(function () {
-            $userId = $this->client->signUp('Cheburashka', 'Passw0rd');
+            $userId = $this->wikiClient->getPageInfo();
             $this->assertGreaterThan(0, $userId);
         });
     }

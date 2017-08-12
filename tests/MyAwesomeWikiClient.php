@@ -2,13 +2,13 @@
 
 use GuzzleHttp\Client;
 
-class MyAwesomeApiClient
+class MyAwesomeWikiClient
 {
     protected $guzzle;
 
     public function __construct()
     {
-        $this->guzzle = new Client(['base_uri' => 'http://httpbin.org/']);
+        $this->guzzle = new Client(['base_uri' => 'https://www.mediawiki.org/w/api.php']);
     }
 
     public function setGuzzle(Client $client)
@@ -22,9 +22,9 @@ class MyAwesomeApiClient
         return $this->guzzle;
     }
 
-    public function signUp(string $login, string $password): int
+    public function getPageInfo(): int
     {
-        $this->guzzle->post('/post', ['body' => json_encode(func_get_args())]);
+        $this->guzzle->get('?action=query&format=json&curtimestamp=1&prop=info&list=&titles=API');
         return 1;
     }
 }

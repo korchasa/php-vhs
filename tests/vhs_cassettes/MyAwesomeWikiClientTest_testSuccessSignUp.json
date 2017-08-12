@@ -7,6 +7,7 @@
     "response": {
         "status": 200,
         "body": {
+            "curtimestamp": "***",
             "query": {
                 "pages": {
                     "55332": {

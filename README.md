@@ -17,24 +17,24 @@ Example:
 use korchasa\Vhs\VhsTestCase;
 use PHPUnit\Framework\TestCase;
 
-class MyAwesomeApiClientTest extends TestCase
+class MyAwesomeWikiClientTest extends TestCase
 {
     use VhsTestCase;
 
-    /** @var MyAwesomeApiClient */
-    private $client;
+    /** @var MyAwesomeWikiClient */
+    private $wikiClient;
 
     public function setUp()
     {
-        $client = new MyAwesomeApiClient();
+        $client = new MyAwesomeWikiClient();
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
-        $this->client = $client;
+        $this->wikiClient = $client;
     }
 
     public function testSuccessSignUp()
     {
         $this->assertVhs(function () {
-            $userId = $this->client->signUp('Cheburashka', 'Passw0rd');
+            $userId = $this->wikiClient->getPageInfo();
             $this->assertGreaterThan(0, $userId);
         });
     }
@@ -47,21 +47,27 @@ Cassette ``tests/vhs_cassettes/MyAwesomeApiClientTest_testSuccessSignUp.json`` c
 ```json
 {
     "request": {
-        "uri": "http:\/\/httpbin.org\/post",
-        "method": "POST",
-        "body": [
-            "Cheburashka",
-            "Passw0rd"
-        ]
+        "uri": "https:\/\/www.mediawiki.org\/w\/api.php?action=query&format=json&curtimestamp=1&prop=info&list=&titles=API",
+        "method": "GET",
+        "body": {}
     },
     "response": {
         "status": 200,
         "body": {
-            "json": [
-                "Cheburashka",
-                "Passw0rd"
-            ],
-            "origin": "***"
+            "curtimestamp": "***",
+            "query": {
+                "pages": {
+                    "55332": {
+                        "pageid": 55332,
+                        "ns": 0,
+                        "title": "API",
+                        "contentmodel": "wikitext",
+                        "pagelanguage": "en",
+                        "pagelanguagehtmlcode": "en",
+                        "pagelanguagedir": "ltr"
+                    }
+                }
+            }
         }
     }
 }

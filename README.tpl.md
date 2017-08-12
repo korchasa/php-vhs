@@ -11,11 +11,11 @@ composer require --dev korchasa/php-vhs
 
 Example:
 
->>>tests/MyAwesomeApiClientTest.php<<<
+>>>tests/MyAwesomeWikiClientTest.php<<<
 
 Cassette ``tests/vhs_cassettes/MyAwesomeApiClientTest_testSuccessSignUp.json`` content
 
->>>tests/vhs_cassettes/MyAwesomeApiClientTest_testSuccessSignUp.json<<<
+>>>tests/vhs_cassettes/MyAwesomeWikiClientTest_testSuccessSignUp.json<<<
 
 CLI commands (not implemented yet):
 ```
