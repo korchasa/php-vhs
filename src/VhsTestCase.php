@@ -4,6 +4,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use korchasa\matched\JsonConstraint;
+use PHPUnit\Framework\IncompleteTestError;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
@@ -52,6 +53,7 @@ trait VhsTestCase
         $test();
         if ($oldCassette->isEmpty()) {
             $this->currentCassette->save();
+            throw new IncompleteTestError("New cassette {$this->currentCassette->path()} recorded!");
         } else {
             $constraint = new JsonConstraint($oldCassette->readRecord());
             static::assertThat($this->currentCassette->getRecord(), $constraint);
