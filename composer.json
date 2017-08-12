@@ -30,16 +30,18 @@
         }
     },
     "scripts": {
-        "check-loop": "while sleep 5; do clear && printf '\\e[3J' && composer run-script check ; done",
+        "check-loop": "while sleep 5; do clear && composer run-script check ; done",
         "check": [
             "@unit",
             "@analyze",
             "@style-fix",
-            "@style"
+            "@style",
+            "@doc"
         ],
         "style": "phpcs --standard=PSR2 src tests",
         "analyze": "phpstan analyse -l5 src tests",
         "unit": "phpunit",
-        "style-fix": "phpcbf --standard=PSR2 -p src tests"
+        "style-fix": "phpcbf --standard=PSR2 -p src tests",
+        "doc": "@php doc.php"
     }
 }

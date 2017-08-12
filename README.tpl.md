@@ -11,58 +11,12 @@ composer require --dev korchasa/php-vhs
 
 Example:
 ```php
-<?php namespace korchasa\Vhs\Tests;
-
-use korchasa\Vhs\VhsTestCase;
-use PHPUnit\Framework\TestCase;
-
-class MyAwesomeApiClientTest extends TestCase
-{
-    use VhsTestCase;
-
-    /** @var MyAwesomeApiClient */
-    private $client;
-
-    public function setUp()
-    {
-        $client = new MyAwesomeApiClient();
-        $client->setGuzzle($this->connectVhs($client->getGuzzle()));
-        $this->client = $client;
-    }
-
-    public function testSuccessSignUp()
-    {
-        $this->assertVhs(function () {
-            $userId = $this->client->signUp('Cheburashka', 'Passw0rd');
-            $this->assertGreaterThan(0, $userId);
-        });
-    }
-}
-
+>>>tests/MyAwesomeApiClientTest.php<<<
 ```
 
 Cassette ``tests/vhs_cassettes/MyAwesomeApiClientTest_testSuccessSignUp.json`` content
 ```json
-{
-    "request": {
-        "uri": "http:\/\/httpbin.org\/post",
-        "method": "POST",
-        "body": [
-            "Cheburashka",
-            "Passw0rd"
-        ]
-    },
-    "response": {
-        "status": 200,
-        "body": {
-            "json": [
-                "Cheburashka",
-                "Passw0rd"
-            ],
-            "origin": "***"
-        }
-    }
-}
+>>>tests/vhs_cassettes/MyAwesomeApiClientTest_testSuccessSignUp.json<<<
 ```
 
 CLI commands (not implemented yet):
