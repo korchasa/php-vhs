@@ -57,10 +57,12 @@ Cassette ``tests/vhs_cassettes/MyAwesomeApiClientTest_testSuccessSignUp.json`` c
     "request": {
         "uri": "https:\/\/www.mediawiki.org\/w\/api.php?action=query&format=json&curtimestamp=1&prop=info&list=&titles=API",
         "method": "GET",
-        "body": {}
+        "body_format": "raw",
+        "body": ""
     },
     "response": {
         "status": 200,
+        "body_format": "json",
         "body": {
             "curtimestamp": "***",
             "query": {

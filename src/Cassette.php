@@ -1,19 +1,15 @@
 <?php namespace korchasa\Vhs;
 
+use http\Env\Response;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class Cassette
 {
     /**
-     * @var RequestInterface
-     */
-    protected $request;
-
-    /**
      * @var ResponseInterface
      */
-    protected $response;
+    protected $record;
     /**
      * @var bool
      */
@@ -41,7 +37,14 @@ class Cassette
      */
     public function setRequest(RequestInterface $request): Cassette
     {
-        $this->request = $request;
+        $json = json_decode($request->getBody()->getContents());
+        $this->record['request'] = [
+            'uri' => (string) $request->getUri(),
+            'method' => $request->getMethod(),
+            'body_format' => $json ? 'json' : 'raw',
+            'headers' => $request->getHeaders(),
+            'body' => $json ?: $request->getBody()->getContents()
+        ];
         return $this;
     }
 
@@ -51,32 +54,30 @@ class Cassette
      */
     public function setResponse(ResponseInterface $response): Cassette
     {
-        $this->response = $response;
+        $json = json_decode($response->getBody()->getContents());
+        $this->record['response'] = [
+            'status' => $response->getStatusCode(),
+            'headers' => $response->getHeaders(),
+            'body_format' => $json ? 'json' : 'raw',
+            'body' => $json ?: $response->getBody()->getContents()
+        ];
         return $this;
     }
 
-    public function getRecord($withHeaders = false): string
+    public function buildResponse()
     {
-        $record = [
-            'request' => [
-                'uri' => (string) $this->request->getUri(),
-                'method' => $this->request->getMethod(),
-                'body' => json_decode($this->request->getBody())
-                            ?: $this->request->getBody()
-            ],
-            'response' => [
-                'status' => $this->response->getStatusCode(),
-                'body' => json_decode($this->response->getBody()->getContents())
-                            ?: $this->response->getBody()->getContents()
-            ]
-        ];
+        return new \GuzzleHttp\Psr7\Response(
+            $this->record['response']['status'] ?? 200,
+            $this->record['response']['headers'] ?? [],
+            $this->record['response']['body_format'] == 'json'
+                ? json_encode($this->record['response']['body'] ?? null)
+                : $this->record['response']['body'] ?? null
+        );
+    }
 
-        if ($withHeaders) {
-            $record['request']['headers'] = $this->request->getHeaders();
-            $record['response']['headers'] = $this->response->getHeaders();
-        }
-
-        return json_encode($record, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    public function getRecord(): string
+    {
+        return json_encode($this->record, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 
     public function isEmpty(): bool
@@ -89,12 +90,17 @@ class Cassette
         file_put_contents($this->path(), $this->getRecord());
     }
 
+    public function load()
+    {
+        $this->record = json_decode($this->readRawRecord(), true);
+    }
+
     public function path(): string
     {
         return $this->dir.DIRECTORY_SEPARATOR.$this->name.'.json';
     }
 
-    public function readRecord()
+    public function readRawRecord()
     {
         return file_get_contents($this->path());
     }

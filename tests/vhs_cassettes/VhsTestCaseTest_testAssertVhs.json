@@ -2,11 +2,19 @@
     "request": {
         "uri": "https:\/\/www.mediawiki.org\/w\/api.php?action=query&format=json&curtimestamp=1&prop=info&list=&titles=API",
         "method": "GET",
-        "body": {}
+        "body_format": "raw",
+        "headers": {
+            "Host": [
+                "www.mediawiki.org"
+            ]
+        },
+        "body": ""
     },
     "response": {
         "status": 200,
+        "body_format": "json",
         "body": {
+            "curtimestamp": "***",
             "query": {
                 "pages": {
                     "55332": {

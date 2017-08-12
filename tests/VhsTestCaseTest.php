@@ -28,10 +28,10 @@ class VhsTestCaseTest extends TestCase
         });
 
         $this->assertEquals(
-            $this->cassettesDir.'/VhsTestCaseTest_testAssertVhs.json',
-            $this->currentCassette->path()
+            $this->vhsCassettesDir.'/VhsTestCaseTest_testAssertVhs.json',
+            $this->currentVhsCassette->path()
         );
-        $this->assertFileExists($this->currentCassette->path());
+        $this->assertFileExists($this->currentVhsCassette->path());
     }
 
     public function testAssertVhsWithCustomCassetteName()
@@ -42,10 +42,10 @@ class VhsTestCaseTest extends TestCase
         }, 'testCustomName');
 
         $this->assertEquals(
-            $this->cassettesDir.'/testCustomName.json',
-            $this->currentCassette->path()
+            $this->vhsCassettesDir.'/testCustomName.json',
+            $this->currentVhsCassette->path()
         );
-        $this->assertFileExists($this->currentCassette->path());
+        $this->assertFileExists($this->currentVhsCassette->path());
     }
 
     public function testAssertVhsFail()
@@ -58,7 +58,7 @@ class VhsTestCaseTest extends TestCase
             $this->fail();
         } catch (ExpectationFailedException $e) {
             $this->assertStringMatched(
-                "***-'2017-08-12T15:33:52Z'***",
+                "***-'2017-08-12T22:32:26Z***'",
                 $e->getMessage()
             );
         }
