@@ -10,14 +10,12 @@ composer require --dev korchasa/php-vhs
 ```
 
 Example:
-```php
+
 >>>tests/MyAwesomeApiClientTest.php<<<
-```
 
 Cassette ``tests/vhs_cassettes/MyAwesomeApiClientTest_testSuccessSignUp.json`` content
-```json
+
 >>>tests/vhs_cassettes/MyAwesomeApiClientTest_testSuccessSignUp.json<<<
-```
 
 CLI commands (not implemented yet):
 ```
@@ -27,6 +25,7 @@ CLI commands (not implemented yet):
 ```
 
 Mock mode (not implemented yet):
+
 In the "mock" mode, requests will not be sent. You will receive responses from recorded cassettes. 
 
 Custom cassettes directory:

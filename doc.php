@@ -1,15 +1,23 @@
 <?php
 declare(strict_types=1);
 
-$output_file = __DIR__.'/README.md';
-$output_content = file_get_contents(__DIR__.'/README.tpl.md');
+$file = __DIR__.'/README.md';
+$content = file_get_contents(__DIR__.'/README.tpl.md');
 
-preg_match_all('/>>>(.*?)<<</', $output_content, $matches);
+preg_match_all('/>>>(.*?)<<</', $content, $matches);
 
-foreach ($matches[1] as $match) {
-    $output_content = str_replace('>>>'.$match.'<<<', file_get_contents($match), $output_content);
+foreach ($matches[1] as $fileName) {
+    if (!file_exists($fileName)) {
+        die("$fileName not found");
+    }
+    $language = pathinfo($fileName)['extension'];
+    $content = str_replace(
+        '>>>'.$fileName.'<<<',
+        sprintf("```%s\n%s\n```", $language, file_get_contents($fileName)),
+        $content
+    );
 }
 
-if ($output_content) {
-    file_put_contents($output_file, $output_content);
+if ($content) {
+    file_put_contents($file, $content);
 }

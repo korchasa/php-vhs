@@ -10,6 +10,7 @@ composer require --dev korchasa/php-vhs
 ```
 
 Example:
+
 ```php
 <?php namespace korchasa\Vhs\Tests;
 
@@ -42,6 +43,7 @@ class MyAwesomeApiClientTest extends TestCase
 ```
 
 Cassette ``tests/vhs_cassettes/MyAwesomeApiClientTest_testSuccessSignUp.json`` content
+
 ```json
 {
     "request": {
@@ -73,6 +75,7 @@ CLI commands (not implemented yet):
 ```
 
 Mock mode (not implemented yet):
+
 In the "mock" mode, requests will not be sent. You will receive responses from recorded cassettes. 
 
 Custom cassettes directory:
