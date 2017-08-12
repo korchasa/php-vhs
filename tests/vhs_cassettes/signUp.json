@@ -10,16 +10,12 @@
     "response": {
         "status": 200,
         "body": {
-            "args": {},
             "data": "[\"Cheburashka\",\"Passw0rd\"]",
-            "files": {},
-            "form": {},
             "json": [
                 "Cheburashka",
                 "Passw0rd"
             ],
-            "origin": "***",
-            "url": "http:\/\/httpbin.org\/post"
+            "origin": "***"
         }
     }
 }
