@@ -1,5 +1,13 @@
 # HTTP request/response recording and mock library for PHP
 
+1. Add ```VhsTestCase``` to test
+1. Surround client call with ```assertValidVhs()```
+1. Run test to record cassette (test will be incomplete)
+1. Replace dynamic values in cassette with ```***``` symbol, and remove unnecessary values 
+1. Run test  
+
+![Usage](http://i.imgur.com/XqnAxyp.gif)
+
 [![Latest Version](https://img.shields.io/packagist/v/korchasa/blueprint.svg?style=flat-square)](https://packagist.org/packages/korchasa/blueprint)
 [![Build Status](https://travis-ci.org/korchasa/blueprint.svg?style=flat-square)](https://travis-ci.org/korchasa/blueprint)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.0-8892BF.svg?style=flat-square)](https://php.net/)
