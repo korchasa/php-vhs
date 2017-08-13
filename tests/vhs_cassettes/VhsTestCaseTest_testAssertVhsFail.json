@@ -2,13 +2,19 @@
     "request": {
         "uri": "https:\/\/www.mediawiki.org\/w\/api.php?action=query&format=json&curtimestamp=1&prop=info&list=&titles=API",
         "method": "GET",
-        "body": {}
+        "body_format": "raw",
+        "headers": {
+            "Host": [
+                "www.mediawiki.org"
+            ]
+        },
+        "body": ""
     },
     "response": {
         "status": 200,
+        "body_format": "json",
         "body": {
-            "batchcomplete": "",
-            "curtimestamp": "2017-08-12T15:33:52Z",
+            "curtimestamp": "2017-08-12T22:32:26Z",
             "query": {
                 "pages": {
                     "55332": {
@@ -18,11 +24,7 @@
                         "contentmodel": "wikitext",
                         "pagelanguage": "en",
                         "pagelanguagehtmlcode": "en",
-                        "pagelanguagedir": "ltr",
-                        "touched": "2017-08-11T16:04:43Z",
-                        "lastrevid": 1625890,
-                        "length": 84,
-                        "redirect": ""
+                        "pagelanguagedir": "ltr"
                     }
                 }
             }

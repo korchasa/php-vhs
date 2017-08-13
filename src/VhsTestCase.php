@@ -3,7 +3,9 @@
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
 use korchasa\matched\JsonConstraint;
+use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\IncompleteTestError;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -14,12 +16,17 @@ trait VhsTestCase
     /**
      * @var string
      */
-    protected $cassettesDir;
+    protected $vhsCassettesDir;
 
     /**
      * @var Cassette
      */
-    protected $currentCassette;
+    protected $currentVhsCassette;
+
+    /**
+     * @var bool
+     */
+    protected $vhsMockMode = false;
 
     protected function connectVhs(Client $client, string $dir = null): Client
     {
@@ -31,13 +38,26 @@ trait VhsTestCase
 
     private function connectToStack(HandlerStack $stack): HandlerStack
     {
-        $stack->push(Middleware::mapRequest(function (RequestInterface $request) {
-            $this->currentCassette->setRequest($request);
+        $stack->before('http_errors', Middleware::mapRequest(function (RequestInterface $request) {
+            $this->currentVhsCassette->setRequest($request);
+            if ($this->vhsMockMode) {
+                return $this->createNullRequest();
+            }
             return $request;
         }));
 
         $stack->push(Middleware::mapResponse(function (ResponseInterface $response) {
-            $this->currentCassette->setResponse($response);
+            if ($this->vhsMockMode) {
+                if ($this->currentVhsCassette->isEmpty()) {
+                    throw new ExpectationFailedException(
+                        "Mock cassette `{$this->currentVhsCassette->path()}` not found!" .
+                        " Disable mock mode and re-run tests."
+                    );
+                }
+                $this->currentVhsCassette->load();
+                return $this->currentVhsCassette->buildResponse();
+            }
+            $this->currentVhsCassette->setResponse($response);
             return $response;
         }));
 
@@ -48,15 +68,17 @@ trait VhsTestCase
     {
         $cassette = $cassette
             ?: $this->resolveCassette(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]);
-        $this->currentCassette = new Cassette($this->cassettesDir, $cassette);
-        $oldCassette = new Cassette($this->cassettesDir, $cassette);
+        $this->currentVhsCassette = new Cassette($this->vhsCassettesDir, $cassette);
+        $oldCassette = new Cassette($this->vhsCassettesDir, $cassette);
         $test();
-        if ($oldCassette->isEmpty()) {
-            $this->currentCassette->save();
-            throw new IncompleteTestError("New cassette {$this->currentCassette->path()} recorded!");
-        } else {
-            $constraint = new JsonConstraint($oldCassette->readRecord());
-            static::assertThat($this->currentCassette->getRecord(), $constraint);
+        if (!$this->vhsMockMode) {
+            if ($oldCassette->isEmpty()) {
+                $this->currentVhsCassette->save();
+                throw new IncompleteTestError("New cassette {$this->currentVhsCassette->path()} recorded!");
+            } else {
+                $constraint = new JsonConstraint($oldCassette->readRawRecord());
+                static::assertThat($this->currentVhsCassette->getRecord(), $constraint);
+            }
         }
     }
 
@@ -65,9 +87,14 @@ trait VhsTestCase
         return substr($callFromTest['class'], strrpos($callFromTest['class'], '\\') + 1) .'_'.$callFromTest['function'];
     }
 
+    public function createNullRequest()
+    {
+        return new Request('get', 'http://wikipedia.org/');
+    }
+
     public function useVhsCassettesFrom($dir)
     {
-        $this->cassettesDir = $dir;
+        $this->vhsCassettesDir = $dir;
     }
 
     private function resolveCassettesDir($givenDir): string
