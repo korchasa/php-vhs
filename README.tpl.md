@@ -1,7 +1,7 @@
 # HTTP request/response recording and mock library for PHP
 
 1. Add ```VhsTestCase``` to test
-1. Surround client call with ```assertValidVhs()```
+1. Surround client call with ```assertVhs()```
 1. Run test to record cassette (test will be incomplete)
 1. Replace dynamic values in cassette with ```***``` symbol, and remove unnecessary values 
 1. Run test  
@@ -34,19 +34,14 @@ CLI commands (not implemented yet):
 
 Mock mode (not implemented yet):
 
-In the "mock" mode, requests will not be sent. You will receive responses from recorded cassettes. 
+In the "mock" mode, requests will not be sent. You will receive responses from recorded cassettes.
+
+In code | phpunit.xml | env vars
+------- | ----------- | --------
+```$this->setMockMode(true)``` | ```<env name="VHS_MOCK" value="true"/>``` | ```VHS_MOCK=1 ./vendor/bin/phpunit```
 
 Custom cassettes directory:
 
-By phpunit.xml:
-```xml
-    <php>
-        <env name="VHS_MOCK" value="true"/>
-        <env name="VHS_DIR" value="./vhs"/>        
-    </php>
-```
-
-By env vars:
-```bash
-VHS_MOCK=true VHS_DIR=./vhs ./vendor/bin/phpunit 
-```
+In code | phpunit.xml | env vars
+------- | ----------- | --------
+```$this->useVhsCassettesFrom(__DIR__.'./vhs')``` | ```<env name="VHS_DIR" value="./vhs"/>``` | ```VHS_DIR=./vhs ./vendor/bin/phpunit```
