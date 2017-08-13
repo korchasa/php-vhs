@@ -3,7 +3,6 @@
     "description": "HTTP request/response recording and mock library for PHP",
     "keywords": ["http", "guzzle", "phpunit", "testing", "vcr"],
     "license": "MIT",
-    "minimum-stability": "beta",
 	"authors": [
 		{
 			"name": "korchasa",
@@ -11,7 +10,7 @@
 		}
 	],
     "require": {
-        "korchasa/matcho": "^0.2.0@beta"
+        "korchasa/matcho": "^0.3.0"
     },
 	"require-dev": {
         "php": ">=7.0",
@@ -19,7 +18,7 @@
         "phpstan/phpstan": "*",
         "sebastian/phpcpd": "*",
         "squizlabs/php_codesniffer": "*",
-        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "^6.0",
         "roave/security-advisories": "dev-master"
 	},
     "autoload": {
