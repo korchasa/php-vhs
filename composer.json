@@ -21,7 +21,8 @@
         "guzzlehttp/guzzle": "^6.0",
         "roave/security-advisories": "dev-master",
         "rappasoft/laravel-helpers": "dev-master",
-        "sebastiaanluca/laravel-helpers": "^1.0"
+        "sebastiaanluca/laravel-helpers": "^1.0",
+        "satooshi/php-coveralls": "^1.0"
 	},
     "autoload": {
         "psr-4": {
