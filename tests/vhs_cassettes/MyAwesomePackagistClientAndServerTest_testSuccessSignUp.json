@@ -1,0 +1,33 @@
+{
+    "request": {
+        "uri": "https:\/\/packagist.org\/p\/korchasa\/php-vhs.json",
+        "method": "GET",
+        "body_format": "raw",
+        "headers": {
+            "User-Agent": [
+                "***"
+            ],
+            "Host": [
+                "packagist.org"
+            ]
+        }
+    },
+    "response": {
+        "status": 200,
+        "body_format": "json",
+        "body": {
+            "packages": {
+                "korchasa\/php-vhs": {
+                    "dev-master": {
+                        "name": "korchasa\/php-vhs",
+                        "version": "dev-master",
+                        "license": [
+                            "***"
+                        ],
+                        "uid": 1551827
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,23 +1,19 @@
 # HTTP request/response recording and mock library for PHP
 
-1. Add ```VhsTestCase``` to test
-1. Surround client call with ```assertVhs()```
-1. Run test to record cassette (test will be incomplete)
-1. Replace dynamic values in cassette with ```***``` symbol, and remove unnecessary values 
-1. Run test  
-
 ![Usage](http://i.imgur.com/XqnAxyp.gif)
 
 [![Latest Version](https://img.shields.io/packagist/v/korchasa/php-vhs.svg?style=flat-square)](https://packagist.org/packages/korchasa/php-vhs)
 [![Build Status](https://travis-ci.org/korchasa/php-vhs.svg?style=flat-square)](https://travis-ci.org/korchasa/php-vhs)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.0-8892BF.svg?style=flat-square)](https://php.net/)
 
-Install:
+## Install:
 ```bash
 composer require --dev korchasa/php-vhs
 ```
 
-Example:
+## Usage for client testing:
+ 
+### 1. Write test with ```VhsTestCase``` trait. Surround client calls with ```assertVhs()```.
 
 ```php
 <?php namespace korchasa\Vhs\Tests;
@@ -25,79 +21,177 @@ Example:
 use korchasa\Vhs\VhsTestCase;
 use PHPUnit\Framework\TestCase;
 
-class MyAwesomeWikiClientTest extends TestCase
+class MyAwesomePackagistClientTest extends TestCase
 {
     use VhsTestCase;
 
-    /** @var MyAwesomeWikiClient */
-    private $wikiClient;
+    /** @var MyAwesomePackagistClient */
+    private $packagistClient;
 
     public function setUp()
     {
-        $client = new MyAwesomeWikiClient();
+        $client = new MyAwesomePackagistClient();
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
-        $this->wikiClient = $client;
+        $this->packagistClient = $client;
     }
 
     public function testSuccessSignUp()
     {
         $this->assertVhs(function () {
-            $userId = $this->wikiClient->getPageInfo();
-            $this->assertGreaterThan(0, $userId);
+            $packageName = $this->packagistClient->getMyPackageName();
+            $this->assertEquals('korchasa/php-vhs', $packageName);
         });
     }
 }
 
 ```
 
-Cassette ``tests/vhs_cassettes/MyAwesomeApiClientTest_testSuccessSignUp.json`` content
+### 2. Run test to record cassette (test will be incomplete)
+
+Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientTest_testSuccessSignUp.json`` content:
 
 ```json
 {
     "request": {
-        "uri": "https:\/\/www.mediawiki.org\/w\/api.php?action=query&format=json&curtimestamp=1&prop=info&list=&titles=API",
+        "uri": "https:\/\/packagist.org\/p\/korchasa\/php-vhs.json",
         "method": "GET",
         "body_format": "raw",
+        "headers": {
+            "User-Agent": [
+                "GuzzleHttp\/6.2.1 curl\/7.54.0 PHP\/7.2.0beta2"
+            ],
+            "Host": [
+                "packagist.org"
+            ]
+        },
         "body": ""
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Server": [
+                "nginx"
+            ],
+            "Date": [
+                "Sat, 19 Aug 2017 15:01:30 GMT"
+            ]
+        },
+        "body_format": "json",
+        "body": {
+            "packages": {
+                "korchasa\/php-vhs": {
+                    "dev-master": {
+                        "name": "korchasa\/php-vhs",
+                        "description": "HTTP request\/response recording and mock library for PHP",
+                        "keywords": [
+                            "http",
+                            "testing",
+                            "phpunit",
+                            "Guzzle",
+                            "vcr"
+                        ],
+                        "homepage": "",
+                        "version": "dev-master",
+                        "version_normalized": "9999999-dev",
+                        "license": [
+                            "MIT"
+                        ],
+                        "authors": [
+                            {
+                                "name": "korchasa",
+...
+
+```
+
+### 3. Run test again
+
+If the cassette is already exists, then we will check the request and replace the response to the one recorded in the cassette.
+
+
+## Usage for server testing:
+
+### 1. Enable server testing mode with ```$this->testServer = true;```
+
+```php
+<?php namespace korchasa\Vhs\Tests;
+
+use korchasa\Vhs\VhsTestCase;
+use PHPUnit\Framework\TestCase;
+
+class MyAwesomePackagistClientTest extends TestCase
+{
+    use VhsTestCase;
+
+    /** @var MyAwesomePackagistClient */
+    private $packagistClient;
+
+    public function setUp()
+    {
+        $client = new MyAwesomePackagistClient();
+        $client->setGuzzle($this->connectVhs($client->getGuzzle()));
+        $this->packagistClient = $client;
+    }
+
+    public function testSuccessSignUp()
+    {
+        $this->assertVhs(function () {
+            $packageName = $this->packagistClient->getMyPackageName();
+            $this->assertEquals('korchasa/php-vhs', $packageName);
+        });
+    }
+}
+
+```
+
+### 2. Run test to record cassette (test will be incomplete)
+
+### 3. Prepare cassette
+
+Remove from cassette unnecessary fields and replace dynamic parts with ```***``` sign.
+
+Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientAndServerTest_testSuccessSignUp.json`` content:
+ 
+```json
+{
+    "request": {
+        "uri": "https:\/\/packagist.org\/p\/korchasa\/php-vhs.json",
+        "method": "GET",
+        "body_format": "raw",
+        "headers": {
+            "User-Agent": [
+                "***"
+            ],
+            "Host": [
+                "packagist.org"
+            ]
+        }
     },
     "response": {
         "status": 200,
         "body_format": "json",
         "body": {
-            "curtimestamp": "***",
-            "query": {
-                "pages": {
-                    "55332": {
-                        "pageid": 55332,
-                        "ns": 0,
-                        "title": "API",
-                        "contentmodel": "wikitext",
-                        "pagelanguage": "en",
-                        "pagelanguagehtmlcode": "en",
-                        "pagelanguagedir": "ltr"
+            "packages": {
+                "korchasa\/php-vhs": {
+                    "dev-master": {
+                        "name": "korchasa\/php-vhs",
+                        "version": "dev-master",
+                        "license": [
+                            "***"
+                        ],
+                        "uid": 1551827
                     }
                 }
             }
         }
     }
 }
-```
+``` 
 
-CLI commands (not implemented yet):
-```
-./vendor/bin/vhs - show cassettes list
-./vendor/bin/vhs delete AcceptanceTest/testSuccessSignUp - delete cassette
-./vendor/bin/vhs show AcceptanceTest - show cassette
-```
+### 4. Run test again
 
-Mock mode (not implemented yet):
+If the cassette is already exists, then we will check the request and replace the response to the one recorded in the cassette.
 
-In the "mock" mode, requests will not be sent. You will receive responses from recorded cassettes.
-
-In code | phpunit.xml | env vars
-------- | ----------- | --------
-```$this->setMockMode(true)``` | ```<env name="VHS_MOCK" value="true"/>``` | ```VHS_MOCK=1 ./vendor/bin/phpunit```
-
+## Configuration
 Custom cassettes directory:
 
 In code | phpunit.xml | env vars

@@ -3,6 +3,7 @@
 use korchasa\matched\AssertMatchedTrait;
 use korchasa\Vhs\VhsTestCase;
 use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\IncompleteTestError;
 use PHPUnit\Framework\TestCase;
 
 class VhsTestCaseTest extends TestCase
@@ -10,21 +11,21 @@ class VhsTestCaseTest extends TestCase
     use VhsTestCase;
     use AssertMatchedTrait;
 
-    /** @var MyAwesomeWikiClient */
-    private $wikiClient;
+    /** @var MyAwesomePackagistClient */
+    private $packagistClient;
 
     public function setUp()
     {
-        $client = new MyAwesomeWikiClient();
+        $client = new MyAwesomePackagistClient();
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
-        $this->wikiClient = $client;
+        $this->packagistClient = $client;
     }
 
     public function testAssertVhs()
     {
         $this->assertVhs(function () {
-            $userId = $this->wikiClient->getPageInfo();
-            $this->assertGreaterThan(0, $userId);
+            $packageName = $this->packagistClient->getMyPackageName();
+            $this->assertEquals('korchasa/php-vhs', $packageName);
         });
 
         $this->assertEquals(
@@ -34,11 +35,36 @@ class VhsTestCaseTest extends TestCase
         $this->assertFileExists($this->currentVhsCassette->path());
     }
 
+    public function testAssertVhsOnRecord()
+    {
+        $cassettePath = $this->vhsCassettesDir.'/record_test.json';
+        if (file_exists($cassettePath)) {
+            unlink($cassettePath);
+        }
+
+        try {
+            $this->assertVhs(function () {
+                $packageName = $this->packagistClient->getMyPackageName();
+                $this->assertEquals('korchasa/php-vhs', $packageName);
+            }, 'record_test');
+            $this->fail("Test must be incomplete");
+        } catch (IncompleteTestError $e) {
+        }
+
+        $this->assertFileExists($cassettePath);
+        $body = object_get(
+            json_decode($this->currentVhsCassette->getAllRecordJson()),
+            'response.body'
+        );
+
+        $this->assertNotEquals('', $body);
+    }
+
     public function testAssertVhsWithCustomCassetteName()
     {
         $this->assertVhs(function () {
-            $userId = $this->wikiClient->getPageInfo();
-            $this->assertGreaterThan(0, $userId);
+            $packageName = $this->packagistClient->getMyPackageName();
+            $this->assertEquals('korchasa/php-vhs', $packageName);
         }, 'testCustomName');
 
         $this->assertEquals(
@@ -50,16 +76,17 @@ class VhsTestCaseTest extends TestCase
 
     public function testAssertVhsFail()
     {
+        $this->testServer = true;
         try {
             $this->assertVhs(function () {
-                $userId = $this->wikiClient->getPageInfo();
-                $this->assertGreaterThan(0, $userId);
+                $packageName = $this->packagistClient->getMyPackageName();
+                $this->assertEquals('korchasa/php-vhs', $packageName);
             });
             $this->fail();
         } catch (ExpectationFailedException $e) {
             $this->assertStringMatched(
-                "***-'2017-08-12T22:32:26Z***'",
-                $e->getMessage()
+                'Given value of `response.headers.Date.0` not match pattern `***`',
+                explode("\n", $e->getMessage())[0]
             );
         }
     }

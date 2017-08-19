@@ -1,45 +1,54 @@
 # HTTP request/response recording and mock library for PHP
 
-1. Add ```VhsTestCase``` to test
-1. Surround client call with ```assertVhs()```
-1. Run test to record cassette (test will be incomplete)
-1. Replace dynamic values in cassette with ```***``` symbol, and remove unnecessary values 
-1. Run test  
-
 ![Usage](http://i.imgur.com/XqnAxyp.gif)
 
 [![Latest Version](https://img.shields.io/packagist/v/korchasa/php-vhs.svg?style=flat-square)](https://packagist.org/packages/korchasa/php-vhs)
 [![Build Status](https://travis-ci.org/korchasa/php-vhs.svg?style=flat-square)](https://travis-ci.org/korchasa/php-vhs)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.0-8892BF.svg?style=flat-square)](https://php.net/)
 
-Install:
+## Install:
 ```bash
 composer require --dev korchasa/php-vhs
 ```
 
-Example:
+## Usage for client testing:
+ 
+### 1. Write test with ```VhsTestCase``` trait. Surround client calls with ```assertVhs()```.
 
->>>tests/MyAwesomeWikiClientTest.php<<<
+>>>tests/MyAwesomePackagistClientTest.php<<<
 
-Cassette ``tests/vhs_cassettes/MyAwesomeApiClientTest_testSuccessSignUp.json`` content
+### 2. Run test to record cassette (test will be incomplete)
 
->>>tests/vhs_cassettes/MyAwesomeWikiClientTest_testSuccessSignUp.json<<<
+Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientTest_testSuccessSignUp.json`` content:
 
-CLI commands (not implemented yet):
-```
-./vendor/bin/vhs - show cassettes list
-./vendor/bin/vhs delete AcceptanceTest/testSuccessSignUp - delete cassette
-./vendor/bin/vhs show AcceptanceTest - show cassette
-```
+>>>tests/vhs_cassettes/MyAwesomePackagistClientTest_testSuccessSignUp.json<<<
 
-Mock mode (not implemented yet):
+### 3. Run test again
 
-In the "mock" mode, requests will not be sent. You will receive responses from recorded cassettes.
+If the cassette is already exists, then we will check the request and replace the response to the one recorded in the cassette.
 
-In code | phpunit.xml | env vars
-------- | ----------- | --------
-```$this->setMockMode(true)``` | ```<env name="VHS_MOCK" value="true"/>``` | ```VHS_MOCK=1 ./vendor/bin/phpunit```
 
+## Usage for server testing:
+
+### 1. Enable server testing mode with ```$this->testServer = true;```
+
+>>>tests/MyAwesomePackagistClientTest.php<<<
+
+### 2. Run test to record cassette (test will be incomplete)
+
+### 3. Prepare cassette
+
+Remove from cassette unnecessary fields and replace dynamic parts with ```***``` sign.
+
+Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientAndServerTest_testSuccessSignUp.json`` content:
+ 
+>>>tests/vhs_cassettes/MyAwesomePackagistClientAndServerTest_testSuccessSignUp.json<<< 
+
+### 4. Run test again
+
+If the cassette is already exists, then we will check the request and replace the response to the one recorded in the cassette.
+
+## Configuration
 Custom cassettes directory:
 
 In code | phpunit.xml | env vars
