@@ -32,7 +32,7 @@ If the cassette is already exists, then we will check the request and replace th
 
 ### 1. Enable server testing mode with ```$this->testServer = true;```
 
->>>tests/MyAwesomePackagistClientTest.php<<<
+>>>tests/MyAwesomePackagistClientAndServerTest.php<<<
 
 ### 2. Run test to record cassette (test will be incomplete)
 

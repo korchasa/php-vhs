@@ -118,7 +118,7 @@ If the cassette is already exists, then we will check the request and replace th
 use korchasa\Vhs\VhsTestCase;
 use PHPUnit\Framework\TestCase;
 
-class MyAwesomePackagistClientTest extends TestCase
+class MyAwesomePackagistClientAndServerTest extends TestCase
 {
     use VhsTestCase;
 
@@ -128,6 +128,7 @@ class MyAwesomePackagistClientTest extends TestCase
     public function setUp()
     {
         $client = new MyAwesomePackagistClient();
+        $this->testServer = true;
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
         $this->packagistClient = $client;
     }
