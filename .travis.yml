@@ -20,7 +20,3 @@ install: composer update --prefer-dist $COMPOSER_FLAGS
 script:
   - composer run-script check
 
-after_success:
-  - ./vendor/bin/phpunit --coverage-clover ./build/logs/clover.xml
-  - ./vendor/satooshi/php-coveralls/bin/coveralls --verbose --config=./.coveralls.yml
-
