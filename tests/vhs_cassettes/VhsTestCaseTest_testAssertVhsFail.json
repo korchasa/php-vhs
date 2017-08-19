@@ -5,7 +5,7 @@
         "body_format": "raw",
         "headers": {
             "User-Agent": [
-                "GuzzleHttp\/6.2.1 curl\/7.54.0 PHP\/7.2.0beta2"
+                "***"
             ],
             "Host": [
                 "packagist.org"
