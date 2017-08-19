@@ -21,5 +21,6 @@ script:
   - composer run-script check
 
 after_success:
+  - ./vendor/bin/phpunit --coverage-clover ./build/logs/clover.xml
   - ./vendor/satooshi/php-coveralls/bin/coveralls --verbose
 
