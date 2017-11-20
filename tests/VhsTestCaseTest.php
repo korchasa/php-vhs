@@ -16,7 +16,7 @@ class VhsTestCaseTest extends TestCase
 
     public function setUp()
     {
-        $client = new MyAwesomePackagistClient();
+        $client = new MyAwesomePackagistClient('packagist.org');
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
         $this->packagistClient = $client;
     }

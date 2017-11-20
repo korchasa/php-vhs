@@ -12,7 +12,7 @@ class MyAwesomePackagistClientTest extends TestCase
 
     public function setUp()
     {
-        $client = new MyAwesomePackagistClient();
+        $client = new MyAwesomePackagistClient('some-not-existent-site.foobar');
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
         $this->packagistClient = $client;
     }

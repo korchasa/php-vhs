@@ -6,9 +6,9 @@ class MyAwesomePackagistClient
 {
     protected $guzzle;
 
-    public function __construct()
+    public function __construct($host)
     {
-        $this->guzzle = new Client(['base_uri' => 'https://packagist.org/']);
+        $this->guzzle = new Client(['base_uri' => "https://$host/"]);
     }
 
     public function setGuzzle(Client $client)
