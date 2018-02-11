@@ -84,7 +84,7 @@ class Cassette
         $this->record['response'] = [
             'status' => $response->getStatusCode(),
             'headers' => $response->getHeaders(),
-            'body_format' => null === $json  ? 'json' : 'raw',
+            'body_format' => null !== $json  ? 'json' : 'raw',
             'body' => $json ?: $body
         ];
         return $this;
@@ -99,8 +99,8 @@ class Cassette
             $this->record['response']['status'] ?? 200,
             $this->record['response']['headers'] ?? [],
             $this->record['response']['body_format'] === 'json'
-                ? json_encode($this->record['response']['body'] ?? null)
-                : $this->record['response']['body'] ?? null
+                ? json_encode($this->record['response']['body'])
+                : $this->record['response']['body']
         );
     }
 
@@ -126,17 +126,17 @@ class Cassette
         return new BodyConstraint($this->record['response']['body'], false);
     }
 
-    public function exist(): bool
+    public function haveRecord(): bool
     {
         return file_exists($this->path());
     }
 
-    public function save()
+    public function saveRecord()
     {
         file_put_contents($this->path(), $this->getAllRecordJson());
     }
 
-    public function load()
+    public function loadRecord()
     {
         $this->record = $this->decode(file_get_contents($this->path()));
         return $this;

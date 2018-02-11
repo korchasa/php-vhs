@@ -1,4 +1,6 @@
-<?php namespace korchasa\Vhs\Tests;
+<?php declare(strict_types=1);
+
+namespace korchasa\Vhs\Tests;
 
 use korchasa\matched\AssertMatchedTrait;
 use korchasa\Vhs\VhsTestCase;
@@ -84,5 +86,16 @@ class VhsTestCaseTest extends TestCase
         } catch (\Exception $e) {
             $this->assertEquals('500 response from packagist.org', $e->getMessage());
         }
+    }
+
+    public function testSuccessSignUpWithNotExistedHostAndRecordedCassette()
+    {
+        $client = new MyAwesomePackagistClient('some-not-existent-site.foobar');
+        $client->setGuzzle($this->connectVhs($client->getGuzzle()));
+
+        $this->assertVhs(function () use ($client) {
+            $packageName = $client->getMyPackageName();
+            $this->assertEquals('korchasa/php-vhs', $packageName);
+        });
     }
 }

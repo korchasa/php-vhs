@@ -30,7 +30,7 @@ class MyAwesomePackagistClientTest extends TestCase
 
     public function setUp()
     {
-        $client = new MyAwesomePackagistClient('some-not-existent-site.foobar');
+        $client = new MyAwesomePackagistClient();
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
         $this->packagistClient = $client;
     }
@@ -58,7 +58,7 @@ Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientTest_testSuccessSignUp.js
         "body_format": "raw",
         "headers": {
             "User-Agent": [
-                "GuzzleHttp\/6.2.1 curl\/7.54.0 PHP\/7.2.0beta2"
+                "GuzzleHttp\/6.2.1 curl\/7.54.0 PHP\/7.1.13"
             ],
             "Host": [
                 "packagist.org"
@@ -69,18 +69,15 @@ Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientTest_testSuccessSignUp.js
     "response": {
         "status": 200,
         "headers": {
-            "Server": [
-                "nginx"
-            ],
-            "Date": [
-                "Sat, 19 Aug 2017 15:01:30 GMT"
+            "Content-Type": [
+                "application\/json"
             ]
         },
         "body_format": "json",
         "body": {
             "packages": {
                 "korchasa\/php-vhs": {
-                    "dev-master": {
+                    "0.1-alpha": {
                         "name": "korchasa\/php-vhs",
                         "description": "HTTP request\/response recording and mock library for PHP",
                         "keywords": [
@@ -91,14 +88,15 @@ Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientTest_testSuccessSignUp.js
                             "vcr"
                         ],
                         "homepage": "",
-                        "version": "dev-master",
-                        "version_normalized": "9999999-dev",
+                        "version": "0.1-alpha",
+                        "version_normalized": "0.1.0.0-alpha",
                         "license": [
                             "MIT"
                         ],
                         "authors": [
                             {
                                 "name": "korchasa",
+                                "email": "korchasa@gmail.com"
 ...
 
 ```
@@ -108,21 +106,45 @@ Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientTest_testSuccessSignUp.js
 If the cassette is already exists, then we will check the request and replace the response to the one recorded in the cassette.
 
 
-## Usage for server testing:
+## Use for server testing:
 
-### 1. Enable server testing mode with ```$this->testServer = true;```
+### 1. Write test with ```VhsServerTestCase``` trait. 
 
 ```php
 <?php namespace korchasa\Vhs\Tests;
 
 use korchasa\Vhs\VhsServerTestCase;
+use korchasa\Vhs\VhsTestCase;
 use PHPUnit\Framework\TestCase;
 
 class MyAwesomePackagistServerTest extends TestCase
 {
+    use VhsTestCase;
     use VhsServerTestCase;
 
-    public function testSuccessSignUp()
+    /** @var MyAwesomePackagistClient */
+    private $packagistClient;
+
+    public function setUp()
+    {
+        $client = new MyAwesomePackagistClient();
+        $client->setGuzzle($this->connectVhs($client->getGuzzle()));
+        $this->packagistClient = $client;
+    }
+
+    public function testSuccessSignUpResponse()
+    {
+        $this->assertValidServerResponse(
+            $this->assertVhs(function () {
+                $this->assertEquals(
+                    'korchasa/php-vhs',
+                    $this->packagistClient->getMyPackageName()
+                );
+            })
+        );
+    }
+
+    public function testAllCassettesByPattern()
     {
         $this->assertValidServerResponse(__DIR__.'/vhs_cassettes/MyAwesomePackagistServerTest_*');
     }
@@ -146,7 +168,7 @@ Cassette ``tests/vhs_cassettes/MyAwesomePackagistServerTest_testSuccessSignUp.js
         "body_format": "raw",
         "headers": {
             "User-Agent": [
-                "GuzzleHttp\/6.2.1 curl\/7.54.0 PHP\/7.2.0beta2"
+                "GuzzleHttp\/6.2.1 curl\/7.54.0 PHP\/7.1.13"
             ],
             "Host": [
                 "packagist.org"
@@ -157,18 +179,15 @@ Cassette ``tests/vhs_cassettes/MyAwesomePackagistServerTest_testSuccessSignUp.js
     "response": {
         "status": 200,
         "headers": {
-            "Server": [
-                "nginx"
-            ],
-            "Date": [
-                "Sat, 19 Aug 2017 15:01:30 GMT"
+            "Content-Type": [
+                "application\/json"
             ]
         },
         "body_format": "json",
         "body": {
             "packages": {
                 "korchasa\/php-vhs": {
-                    "dev-master": {
+                    "0.1-alpha": {
                         "name": "korchasa\/php-vhs",
                         "description": "HTTP request\/response recording and mock library for PHP",
                         "keywords": [
@@ -179,14 +198,15 @@ Cassette ``tests/vhs_cassettes/MyAwesomePackagistServerTest_testSuccessSignUp.js
                             "vcr"
                         ],
                         "homepage": "",
-                        "version": "dev-master",
-                        "version_normalized": "9999999-dev",
+                        "version": "0.1-alpha",
+                        "version_normalized": "0.1.0.0-alpha",
                         "license": [
                             "MIT"
                         ],
                         "authors": [
                             {
                                 "name": "korchasa",
+                                "email": "korchasa@gmail.com"
 ...
 
 ``` 

@@ -1,4 +1,6 @@
-<?php namespace korchasa\Vhs;
+<?php declare(strict_types=1);
+
+namespace korchasa\Vhs;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
@@ -15,7 +17,7 @@ trait VhsServerTestCase
         }
 
         foreach ($this->findCassettes($cassettesPathPattern) as $cassette) {
-            $cassette->load();
+            $cassette->loadRecord();
             $this->assertValidServerResponseForCassette($cassette);
         }
     }

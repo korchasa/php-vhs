@@ -1,4 +1,6 @@
-<?php namespace korchasa\Vhs;
+<?php declare(strict_types=1);
+
+namespace korchasa\Vhs;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
@@ -38,7 +40,7 @@ trait VhsTestCase
     {
         $stack->before('http_errors', Middleware::mapRequest(function (RequestInterface $request) {
             $this->currentVhsCassette->setRequest($request);
-            if ($this->currentVhsCassette->exist()) {
+            if ($this->currentVhsCassette->haveRecord()) {
                 return $this->createNullRequest();
             }
 
@@ -47,8 +49,8 @@ trait VhsTestCase
 
         $stack->push(Middleware::mapResponse(function (ResponseInterface $response) {
             $this->currentVhsCassette->setResponse($response);
-            if ($this->currentVhsCassette->exist()) {
-                return $this->currentVhsCassette->load()->buildPsrResponse();
+            if ($this->currentVhsCassette->haveRecord()) {
+                return $this->currentVhsCassette->loadRecord()->buildPsrResponse();
             }
 
             return $response;
@@ -57,31 +59,34 @@ trait VhsTestCase
         return $stack;
     }
 
-    protected function assertVhs(callable $test, string $cassette = null)
+    /**
+     * @param callable $test
+     * @param string|null $cassetteName
+     * @return string Cassette name
+     * @throws \ReflectionException
+     */
+    protected function assertVhs(callable $test, string $cassetteName = null): string
     {
         $caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
-        $cassette = $cassette ?: $this->vhsConfig->resolveCassetteName($caller['class'], $caller['function']);
-        $cassettePath = $this->vhsConfig->resolveCassettePath($caller['class'], $cassette);
-        $this->currentVhsCassette = new Cassette($cassettePath, $cassette);
-        $oldCassette = new Cassette($cassettePath, $cassette);
+        $cassetteName = $cassetteName ?: $this->vhsConfig->resolveCassetteName($caller['class'], $caller['function']);
+        $cassettePath = $this->vhsConfig->resolveCassettePath($caller['class'], $cassetteName);
+        $this->currentVhsCassette = new Cassette($cassettePath, $cassetteName);
+        $oldCassette = new Cassette($cassettePath, $cassetteName);
         $test();
 
-        if (!$oldCassette->exist()) {
-            $this->currentVhsCassette->save();
+        if (!$oldCassette->haveRecord()) {
+            $this->currentVhsCassette->saveRecord();
             throw new IncompleteTestError("New cassette {$this->currentVhsCassette->path()} recorded!");
         }
 
-        $oldCassette->load();
+        $oldCassette->loadRecord();
         $constraint = new JsonConstraint($oldCassette->getRequestJson());
         static::assertThat($this->currentVhsCassette->getRequestJson(), $constraint);
+
+        return $cassetteName;
     }
 
-    private function resolveCassetteName($callFromTest): string
-    {
-        return substr($callFromTest['class'], strrpos($callFromTest['class'], '\\') + 1) .'_'.$callFromTest['function'];
-    }
-
-    public function createNullRequest()
+    public function createNullRequest(): Request
     {
         return new Request('get', 'http://google.com/');
     }

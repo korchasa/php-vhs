@@ -1,4 +1,6 @@
-<?php namespace korchasa\Vhs\Tests;
+<?php declare(strict_types=1);
+
+namespace korchasa\Vhs\Tests;
 
 use korchasa\Vhs\VhsTestCase;
 use PHPUnit\Framework\TestCase;
@@ -12,7 +14,7 @@ class MyAwesomePackagistClientTest extends TestCase
 
     public function setUp()
     {
-        $client = new MyAwesomePackagistClient('some-not-existent-site.foobar');
+        $client = new MyAwesomePackagistClient();
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
         $this->packagistClient = $client;
     }

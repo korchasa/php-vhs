@@ -28,9 +28,9 @@ Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientTest_testSuccessSignUp.js
 If the cassette is already exists, then we will check the request and replace the response to the one recorded in the cassette.
 
 
-## Usage for server testing:
+## Use for server testing:
 
-### 1. Enable server testing mode with ```$this->testServer = true;```
+### 1. Write test with ```VhsServerTestCase``` trait. 
 
 >>>tests/MyAwesomePackagistServerTest.php<<<
 
@@ -42,7 +42,7 @@ Remove from cassette unnecessary fields and replace dynamic parts with ```***```
 
 Cassette ``tests/vhs_cassettes/MyAwesomePackagistServerTest_testSuccessSignUp.json`` content:
  
->>>tests/vhs_cassettes/MyAwesomePackagistServerTest_testSuccessSignUp.json<<< 
+>>>tests/vhs_cassettes/MyAwesomePackagistServerTest_testSuccessSignUpResponse.json<<< 
 
 ### 4. Run test again
 

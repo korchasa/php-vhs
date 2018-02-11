@@ -1,4 +1,6 @@
-<?php namespace korchasa\Vhs\Tests;
+<?php declare(strict_types=1);
+
+namespace korchasa\Vhs\Tests;
 
 use GuzzleHttp\Client;
 
@@ -6,7 +8,7 @@ class MyAwesomePackagistClient
 {
     protected $guzzle;
 
-    public function __construct($host)
+    public function __construct(string $host = 'packagist.org')
     {
         $this->guzzle = new Client([
             'base_uri' => "https://$host/",
@@ -33,6 +35,6 @@ class MyAwesomePackagistClient
         }
         $responseJson = $response->getBody()->getContents();
         $responseData = json_decode($responseJson, true);
-        return $responseData['packages']['korchasa/php-vhs']['dev-master']['name'];
+        return $responseData['packages']['korchasa/php-vhs']['0.1-alpha']['name'];
     }
 }
