@@ -16,7 +16,9 @@ composer require --dev korchasa/php-vhs
 ### 1. Write test with ```VhsTestCase``` trait. Surround client calls with ```assertVhs()```.
 
 ```php
-<?php namespace korchasa\Vhs\Tests;
+<?php declare(strict_types=1);
+
+namespace korchasa\Vhs\Tests;
 
 use korchasa\Vhs\VhsTestCase;
 use PHPUnit\Framework\TestCase;
@@ -111,7 +113,9 @@ If the cassette is already exists, then we will check the request and replace th
 ### 1. Write test with ```VhsServerTestCase``` trait. 
 
 ```php
-<?php namespace korchasa\Vhs\Tests;
+<?php declare(strict_types=1);
+
+namespace korchasa\Vhs\Tests;
 
 use korchasa\Vhs\VhsServerTestCase;
 use korchasa\Vhs\VhsTestCase;

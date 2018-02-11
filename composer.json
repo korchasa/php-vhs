@@ -39,7 +39,8 @@
             "@analyze",
             "@style-fix",
             "@style",
-            "@doc"
+            "@doc",
+            "composer validate"
         ],
         "style": "phpcs --standard=PSR2 src tests",
         "analyze": "phpstan analyse -l5 src tests",
