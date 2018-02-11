@@ -31,7 +31,7 @@ class MyAwesomePackagistClient
     {
         $response = $this->guzzle->get('p/korchasa/php-vhs.json');
         if (200 !== $response->getStatusCode()) {
-            throw new \RuntimeException("500 response from packagist.org");
+            throw new \RuntimeException('500 response from packagist.org');
         }
         $responseJson = $response->getBody()->getContents();
         $responseData = json_decode($responseJson, true);

@@ -48,7 +48,7 @@ class VhsTestCaseTest extends TestCase
                 $packageName = $this->packagistClient->getMyPackageName();
                 $this->assertEquals('korchasa/php-vhs', $packageName);
             }, 'record_test');
-            $this->fail("Test must be incomplete");
+            $this->fail('Test must be incomplete');
         } catch (IncompleteTestError $e) {
         }
 

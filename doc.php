@@ -7,7 +7,7 @@ $maxLength = 1500;
 
 preg_match_all('/>>>(.*?)<<</', $content, $matches);
 
-foreach ($matches[1] as $fileName) {
+foreach ((array) $matches[1] as $fileName) {
     if (!file_exists($fileName)) {
         die("$fileName not found");
     }
