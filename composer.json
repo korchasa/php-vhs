@@ -10,7 +10,7 @@
 		}
 	],
     "require": {
-        "korchasa/matcho": "^0.3.0"
+        "korchasa/matcho": "dev-master"
     },
 	"require-dev": {
         "php": ">=7.0",

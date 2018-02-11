@@ -1,11 +1,17 @@
-<?php namespace korchasa\Vhs;
+<?php declare(strict_types=1);
 
-use http\Env\Response;
+namespace korchasa\Vhs;
+
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
+use korchasa\matched\AssertMatchedTrait;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class Cassette
 {
+    use AssertMatchedTrait;
+
     /**
      * @var ResponseInterface
      */
@@ -18,7 +24,7 @@ class Cassette
     /**
      * @var string
      */
-    protected $dir;
+    protected $path;
 
     /**
      * @var string
@@ -28,9 +34,9 @@ class Cassette
     protected $request;
     protected $response;
 
-    public function __construct(string $dir, string $name)
+    public function __construct(string $path, string $name)
     {
-        $this->dir = $dir;
+        $this->path = $path;
         $this->name = $name;
     }
 
@@ -54,6 +60,19 @@ class Cassette
     }
 
     /**
+     * @return Request
+     */
+    public function buildPsrRequest(): Request
+    {
+        return new Request(
+            $this->record['request']['method'] ?? 'GET',
+            $this->record['request']['uri'] ?? 'localhost',
+            $this->record['request']['headers'] ?? [],
+            $this->record['request']['body'] ?? ''
+        );
+    }
+
+    /**
      * @param ResponseInterface $response
      * @return Cassette
      */
@@ -65,21 +84,21 @@ class Cassette
         $this->record['response'] = [
             'status' => $response->getStatusCode(),
             'headers' => $response->getHeaders(),
-            'body_format' => $json ? 'json' : 'raw',
+            'body_format' => null === $json  ? 'json' : 'raw',
             'body' => $json ?: $body
         ];
         return $this;
     }
 
     /**
-     * @return \GuzzleHttp\Psr7\Response
+     * @return Response
      */
-    public function buildGuzzleResponse()
+    public function buildPsrResponse(): Response
     {
-        return new \GuzzleHttp\Psr7\Response(
+        return new Response(
             $this->record['response']['status'] ?? 200,
             $this->record['response']['headers'] ?? [],
-            $this->record['response']['body_format'] == 'json'
+            $this->record['response']['body_format'] === 'json'
                 ? json_encode($this->record['response']['body'] ?? null)
                 : $this->record['response']['body'] ?? null
         );
@@ -90,9 +109,21 @@ class Cassette
         return $this->encode($this->record);
     }
 
-    public function getRequestJson()
+    public function getRequestJson(): string
     {
         return $this->encode($this->record['request']);
+    }
+
+    /**
+     * @return BodyConstraint
+     */
+    public function bodyConstraint(): BodyConstraint
+    {
+        if ('json' === $this->record['response']['body_format']) {
+            return new BodyConstraint($this->record['response']['body'], true);
+        }
+
+        return new BodyConstraint($this->record['response']['body'], false);
     }
 
     public function exist(): bool
@@ -113,7 +144,7 @@ class Cassette
 
     public function path(): string
     {
-        return $this->dir.DIRECTORY_SEPARATOR.$this->name.'.json';
+        return $this->path;
     }
 
     private function encode($mixed): string

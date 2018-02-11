@@ -2,7 +2,6 @@
 
 use korchasa\matched\AssertMatchedTrait;
 use korchasa\Vhs\VhsTestCase;
-use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\IncompleteTestError;
 use PHPUnit\Framework\TestCase;
 
@@ -29,7 +28,7 @@ class VhsTestCaseTest extends TestCase
         });
 
         $this->assertEquals(
-            $this->vhsCassettesDir.'/VhsTestCaseTest_testAssertVhs.json',
+            __DIR__.'/vhs_cassettes/VhsTestCaseTest_testAssertVhs.json',
             $this->currentVhsCassette->path()
         );
         $this->assertFileExists($this->currentVhsCassette->path());
@@ -37,7 +36,7 @@ class VhsTestCaseTest extends TestCase
 
     public function testAssertVhsOnRecord()
     {
-        $cassettePath = $this->vhsCassettesDir.'/record_test.json';
+        $cassettePath = $this->vhsConfig->resolveCassettesDir(__CLASS__).'/record_test.json';
         if (file_exists($cassettePath)) {
             unlink($cassettePath);
         }
@@ -68,7 +67,7 @@ class VhsTestCaseTest extends TestCase
         }, 'testCustomName');
 
         $this->assertEquals(
-            $this->vhsCassettesDir.'/testCustomName.json',
+            __DIR__.'/vhs_cassettes/testCustomName.json',
             $this->currentVhsCassette->path()
         );
         $this->assertFileExists($this->currentVhsCassette->path());
@@ -76,18 +75,14 @@ class VhsTestCaseTest extends TestCase
 
     public function testAssertVhsFail()
     {
-        $this->testServer = true;
         try {
             $this->assertVhs(function () {
                 $packageName = $this->packagistClient->getMyPackageName();
                 $this->assertEquals('korchasa/php-vhs', $packageName);
             });
             $this->fail();
-        } catch (ExpectationFailedException $e) {
-            $this->assertStringMatched(
-                'Given value of `response.headers.Date.0` not match pattern `***`',
-                explode("\n", $e->getMessage())[0]
-            );
+        } catch (\Exception $e) {
+            $this->assertEquals('500 response from packagist.org', $e->getMessage());
         }
     }
 }

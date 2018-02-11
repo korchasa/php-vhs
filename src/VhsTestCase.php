@@ -8,14 +8,13 @@ use korchasa\matched\JsonConstraint;
 use PHPUnit\Framework\IncompleteTestError;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use ReflectionClass;
 
 trait VhsTestCase
 {
     /**
-     * @var string
+     * @var Config
      */
-    protected $vhsCassettesDir;
+    protected $vhsConfig;
 
     /**
      * @var Cassette
@@ -23,36 +22,36 @@ trait VhsTestCase
     protected $currentVhsCassette;
 
     /**
-     * @var bool
+     * @param Client $client
+     * @param Config|null $config
+     * @return Client
      */
-    protected $testServer = false;
-
-    protected function connectVhs(Client $client, string $dir = null): Client
+    protected function connectVhs(Client $client, Config $config = null): Client
     {
-        $this->useVhsCassettesFrom($this->resolveCassettesDir($dir));
-        $config = $client->getConfig();
-        $config['handler'] = $this->connectToStack($config['handler']);
-        return new Client($config);
+        $this->vhsConfig = $config ?: new Config();
+        $guzzleConfig = $client->getConfig();
+        $guzzleConfig['handler'] = $this->connectToStack($guzzleConfig['handler']);
+        return new Client($guzzleConfig);
     }
 
     private function connectToStack(HandlerStack $stack): HandlerStack
     {
         $stack->before('http_errors', Middleware::mapRequest(function (RequestInterface $request) {
             $this->currentVhsCassette->setRequest($request);
-            if (!$this->testServer && $this->currentVhsCassette->exist()) {
+            if ($this->currentVhsCassette->exist()) {
                 return $this->createNullRequest();
-            } else {
-                return $request;
             }
+
+            return $request;
         }));
 
         $stack->push(Middleware::mapResponse(function (ResponseInterface $response) {
             $this->currentVhsCassette->setResponse($response);
-            if (!$this->testServer && $this->currentVhsCassette->exist()) {
-                return $this->currentVhsCassette->load()->buildGuzzleResponse();
-            } else {
-                return $response;
+            if ($this->currentVhsCassette->exist()) {
+                return $this->currentVhsCassette->load()->buildPsrResponse();
             }
+
+            return $response;
         }));
 
         return $stack;
@@ -60,28 +59,24 @@ trait VhsTestCase
 
     protected function assertVhs(callable $test, string $cassette = null)
     {
-        $cassette = $cassette
-            ?: $this->resolveCassette(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]);
-        $this->currentVhsCassette = new Cassette($this->vhsCassettesDir, $cassette);
-        $oldCassette = new Cassette($this->vhsCassettesDir, $cassette);
+        $caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+        $cassette = $cassette ?: $this->vhsConfig->resolveCassetteName($caller['class'], $caller['function']);
+        $cassettePath = $this->vhsConfig->resolveCassettePath($caller['class'], $cassette);
+        $this->currentVhsCassette = new Cassette($cassettePath, $cassette);
+        $oldCassette = new Cassette($cassettePath, $cassette);
         $test();
 
         if (!$oldCassette->exist()) {
             $this->currentVhsCassette->save();
             throw new IncompleteTestError("New cassette {$this->currentVhsCassette->path()} recorded!");
-        } else {
-            $oldCassette->load();
-            if (!$this->testServer) {
-                $constraint = new JsonConstraint($oldCassette->getRequestJson());
-                static::assertThat($this->currentVhsCassette->getRequestJson(), $constraint);
-            } else {
-                $constraint = new JsonConstraint($oldCassette->getAllRecordJson());
-                static::assertThat($this->currentVhsCassette->getAllRecordJson(), $constraint);
-            }
         }
+
+        $oldCassette->load();
+        $constraint = new JsonConstraint($oldCassette->getRequestJson());
+        static::assertThat($this->currentVhsCassette->getRequestJson(), $constraint);
     }
 
-    private function resolveCassette($callFromTest): string
+    private function resolveCassetteName($callFromTest): string
     {
         return substr($callFromTest['class'], strrpos($callFromTest['class'], '\\') + 1) .'_'.$callFromTest['function'];
     }
@@ -89,21 +84,5 @@ trait VhsTestCase
     public function createNullRequest()
     {
         return new Request('get', 'http://google.com/');
-    }
-
-    public function useVhsCassettesFrom($dir)
-    {
-        $this->vhsCassettesDir = $dir;
-        return $this;
-    }
-
-    private function resolveCassettesDir($givenDir): string
-    {
-        $dir = $givenDir ?: getenv("VHS_DIR");
-        if (!$dir) {
-            $reflector = new ReflectionClass(get_called_class());
-            $dir = dirname($reflector->getFileName()).'/vhs_cassettes';
-        }
-        return $dir;
     }
 }

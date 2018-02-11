@@ -30,7 +30,7 @@ class MyAwesomePackagistClientTest extends TestCase
 
     public function setUp()
     {
-        $client = new MyAwesomePackagistClient();
+        $client = new MyAwesomePackagistClient('some-not-existent-site.foobar');
         $client->setGuzzle($this->connectVhs($client->getGuzzle()));
         $this->packagistClient = $client;
     }
@@ -115,30 +115,16 @@ If the cassette is already exists, then we will check the request and replace th
 ```php
 <?php namespace korchasa\Vhs\Tests;
 
-use korchasa\Vhs\VhsTestCase;
+use korchasa\Vhs\VhsServerTestCase;
 use PHPUnit\Framework\TestCase;
 
-class MyAwesomePackagistClientAndServerTest extends TestCase
+class MyAwesomePackagistServerTest extends TestCase
 {
-    use VhsTestCase;
-
-    /** @var MyAwesomePackagistClient */
-    private $packagistClient;
-
-    public function setUp()
-    {
-        $client = new MyAwesomePackagistClient();
-        $this->testServer = true;
-        $client->setGuzzle($this->connectVhs($client->getGuzzle()));
-        $this->packagistClient = $client;
-    }
+    use VhsServerTestCase;
 
     public function testSuccessSignUp()
     {
-        $this->assertVhs(function () {
-            $packageName = $this->packagistClient->getMyPackageName();
-            $this->assertEquals('korchasa/php-vhs', $packageName);
-        });
+        $this->assertValidServerResponse(__DIR__.'/vhs_cassettes/MyAwesomePackagistServerTest_*');
     }
 }
 
@@ -150,7 +136,7 @@ class MyAwesomePackagistClientAndServerTest extends TestCase
 
 Remove from cassette unnecessary fields and replace dynamic parts with ```***``` sign.
 
-Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientAndServerTest_testSuccessSignUp.json`` content:
+Cassette ``tests/vhs_cassettes/MyAwesomePackagistServerTest_testSuccessSignUp.json`` content:
  
 ```json
 {
@@ -160,32 +146,49 @@ Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientAndServerTest_testSuccess
         "body_format": "raw",
         "headers": {
             "User-Agent": [
-                "***"
+                "GuzzleHttp\/6.2.1 curl\/7.54.0 PHP\/7.2.0beta2"
             ],
             "Host": [
                 "packagist.org"
             ]
-        }
+        },
+        "body": ""
     },
     "response": {
         "status": 200,
+        "headers": {
+            "Server": [
+                "nginx"
+            ],
+            "Date": [
+                "Sat, 19 Aug 2017 15:01:30 GMT"
+            ]
+        },
         "body_format": "json",
         "body": {
             "packages": {
                 "korchasa\/php-vhs": {
                     "dev-master": {
                         "name": "korchasa\/php-vhs",
-                        "version": "dev-master",
-                        "license": [
-                            "***"
+                        "description": "HTTP request\/response recording and mock library for PHP",
+                        "keywords": [
+                            "http",
+                            "testing",
+                            "phpunit",
+                            "Guzzle",
+                            "vcr"
                         ],
-                        "uid": 1551827
-                    }
-                }
-            }
-        }
-    }
-}
+                        "homepage": "",
+                        "version": "dev-master",
+                        "version_normalized": "9999999-dev",
+                        "license": [
+                            "MIT"
+                        ],
+                        "authors": [
+                            {
+                                "name": "korchasa",
+...
+
 ``` 
 
 ### 4. Run test again

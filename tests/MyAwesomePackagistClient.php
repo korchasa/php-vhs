@@ -8,7 +8,10 @@ class MyAwesomePackagistClient
 
     public function __construct($host)
     {
-        $this->guzzle = new Client(['base_uri' => "https://$host/"]);
+        $this->guzzle = new Client([
+            'base_uri' => "https://$host/",
+            'http_errors' => false,
+        ]);
     }
 
     public function setGuzzle(Client $client)
@@ -24,8 +27,12 @@ class MyAwesomePackagistClient
 
     public function getMyPackageName(): string
     {
-        $responseJson = $this->guzzle->get('p/korchasa/php-vhs.json')->getBody()->getContents();
-        $response = json_decode($responseJson, true);
-        return $response['packages']['korchasa/php-vhs']['dev-master']['name'];
+        $response = $this->guzzle->get('p/korchasa/php-vhs.json');
+        if (200 !== $response->getStatusCode()) {
+            throw new \RuntimeException("500 response from packagist.org");
+        }
+        $responseJson = $response->getBody()->getContents();
+        $responseData = json_decode($responseJson, true);
+        return $responseData['packages']['korchasa/php-vhs']['dev-master']['name'];
     }
 }

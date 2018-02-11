@@ -1,0 +1,88 @@
+{
+    "request": {
+        "uri": "https:\/\/packagist.org\/p\/korchasa\/php-vhs.json",
+        "method": "GET",
+        "body_format": "raw",
+        "headers": {
+            "User-Agent": [
+                "GuzzleHttp\/6.2.1 curl\/7.54.0 PHP\/7.2.0beta2"
+            ],
+            "Host": [
+                "packagist.org"
+            ]
+        },
+        "body": ""
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Server": [
+                "nginx"
+            ],
+            "Date": [
+                "Sat, 19 Aug 2017 15:01:30 GMT"
+            ]
+        },
+        "body_format": "json",
+        "body": {
+            "packages": {
+                "korchasa\/php-vhs": {
+                    "dev-master": {
+                        "name": "korchasa\/php-vhs",
+                        "description": "HTTP request\/response recording and mock library for PHP",
+                        "keywords": [
+                            "http",
+                            "testing",
+                            "phpunit",
+                            "Guzzle",
+                            "vcr"
+                        ],
+                        "homepage": "",
+                        "version": "dev-master",
+                        "version_normalized": "9999999-dev",
+                        "license": [
+                            "MIT"
+                        ],
+                        "authors": [
+                            {
+                                "name": "korchasa",
+                                "email": "korchasa@gmail.com"
+                            }
+                        ],
+                        "source": {
+                            "type": "git",
+                            "url": "https:\/\/github.com\/korchasa\/php-vhs.git",
+                            "reference": "**>34708f6bc1074c00c466f1f42bd9ea36a08eb3d9<**"
+                        },
+                        "dist": {
+                            "type": "zip",
+                            "url": "https:\/\/api.github.com\/repos\/korchasa\/php-vhs\/zipball\/**>34708f6bc1074c00c466f1f42bd9ea36a08eb3d9<**",
+                            "reference": "**>34708f6bc1074c00c466f1f42bd9ea36a08eb3d9<**",
+                            "shasum": ""
+                        },
+                        "type": "library",
+                        "time": "**>2017-08-13T10:10:50+00:00<**",
+                        "autoload": {
+                            "psr-4": {
+                                "korchasa\\Vhs\\": "src\/"
+                            }
+                        },
+                        "require": {
+                            "korchasa\/matcho": "^0.3.0"
+                        },
+                        "require-dev": {
+                            "php": ">=7.0",
+                            "phpunit\/phpunit": "^6.0",
+                            "phpstan\/phpstan": "*",
+                            "sebastian\/phpcpd": "*",
+                            "squizlabs\/php_codesniffer": "*",
+                            "roave\/security-advisories": "dev-master",
+                            "guzzlehttp\/guzzle": "^6.0"
+                        },
+                        "uid": 1551827
+                    }
+                }
+            }
+        }
+    }
+}

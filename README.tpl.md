@@ -32,7 +32,7 @@ If the cassette is already exists, then we will check the request and replace th
 
 ### 1. Enable server testing mode with ```$this->testServer = true;```
 
->>>tests/MyAwesomePackagistClientAndServerTest.php<<<
+>>>tests/MyAwesomePackagistServerTest.php<<<
 
 ### 2. Run test to record cassette (test will be incomplete)
 
@@ -40,9 +40,9 @@ If the cassette is already exists, then we will check the request and replace th
 
 Remove from cassette unnecessary fields and replace dynamic parts with ```***``` sign.
 
-Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientAndServerTest_testSuccessSignUp.json`` content:
+Cassette ``tests/vhs_cassettes/MyAwesomePackagistServerTest_testSuccessSignUp.json`` content:
  
->>>tests/vhs_cassettes/MyAwesomePackagistClientAndServerTest_testSuccessSignUp.json<<< 
+>>>tests/vhs_cassettes/MyAwesomePackagistServerTest_testSuccessSignUp.json<<< 
 
 ### 4. Run test again
 
