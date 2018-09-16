@@ -17,6 +17,11 @@ env:
     - PREFER="--prefer-lowest --prefer-stable"
     - PREFER=""
 
+matrix:
+  exclude:
+      - php: 'nightly'
+        env: PREFER="--prefer-lowest --prefer-stable"
+
 before_install:
   - composer self-update
 
