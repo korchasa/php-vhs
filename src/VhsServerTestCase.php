@@ -12,7 +12,7 @@ trait VhsServerTestCase
 
     public function assertValidServerResponse(string $cassettesPathPattern)
     {
-        if (!$this->vhsConfig) {
+        if (null == $this->vhsConfig) {
             $this->vhsConfig = new Config();
         }
 
@@ -24,7 +24,6 @@ trait VhsServerTestCase
 
     public function assertValidServerResponseForCassette(Cassette $cassette)
     {
-
         $actualResponse = (new Client())->send($cassette->buildPsrRequest());
         self::assertThat($actualResponse->getBody()->getContents(), $cassette->bodyConstraint());
     }

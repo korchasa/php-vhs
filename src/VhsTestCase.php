@@ -61,9 +61,8 @@ trait VhsTestCase
 
     /**
      * @param callable $test
-     * @param string|null $cassetteName
+     * @param string $cassetteName
      * @return string Cassette name
-     * @throws \ReflectionException
      */
     protected function assertVhs(callable $test, string $cassetteName = null): string
     {

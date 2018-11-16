@@ -12,9 +12,6 @@ class Cassette
 {
     use AssertMatchedTrait;
 
-    /**
-     * @var ResponseInterface
-     */
     protected $record;
     /**
      * @var bool
@@ -138,7 +135,11 @@ class Cassette
 
     public function loadRecord()
     {
-        $this->record = $this->decode(file_get_contents($this->path()));
+        $res = file_get_contents($this->path());
+        if (false === $res) {
+            throw new \Exception(error_get_last()['message']);
+        }
+        $this->record = $this->decode($res);
         return $this;
     }
 
