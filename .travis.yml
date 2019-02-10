@@ -7,26 +7,26 @@ cache:
     - $HOME/.composer/cache/files
 
 php:
-  - '7.0'
   - '7.1'
   - '7.2'
+  - '7.3'
   - nightly
 
 env:
   matrix:
-    - PREFER="--prefer-lowest --prefer-stable"
-    - PREFER=""
+    - dependencies=lowest
+    - dependencies=highest
 
 matrix:
-  exclude:
-      - php: 'nightly'
-        env: PREFER="--prefer-lowest --prefer-stable"
+  allow_failures:
+    - php: 'nightly'
 
-before_install:
-  - composer self-update
+before_install: composer self-update -n
 
-install: composer update --prefer-dist $PREFER $COMPOSER_FLAGS
+install:
+  - if [ -z "$dependencies" ]; then composer install -v; fi;
+  - if [ "$dependencies" = "lowest" ]; then composer update --prefer-lowest -nv; fi;
+  - if [ "$dependencies" = "highest" ]; then composer update -nv; fi;
 
-script:
-  - composer run-script check
+script: composer run-script check
 
