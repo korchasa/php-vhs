@@ -1,0 +1,72 @@
+[
+    {
+        "request": {
+            "uri": "https:\/\/api.travis-ci.org\/auth\/github",
+            "method": "POST",
+            "headers": {
+                "User-Agent": [
+                    "GuzzleHttp\/6.3.3 curl\/7.64.0 PHP\/7.3.2"
+                ],
+                "Host": [
+                    "api.travis-ci.org"
+                ]
+            },
+            "body": "",
+            "body_format": "raw"
+        },
+        "response": {
+            "status": 422,
+            "headers": {
+                "Connection": [
+                    "keep-alive"
+                ],
+                "Server": [
+                    "nginx"
+                ],
+                "Content-Type": [
+                    "application\/json"
+                ],
+                "Content-Length": [
+                    "46"
+                ],
+                "Strict-Transport-Security": [
+                    "max-age=31536000"
+                ],
+                "X-Endpoint": [
+                    "Travis::Api::App::Endpoint::Authorization"
+                ],
+                "X-Pattern": [
+                    "\/github"
+                ],
+                "X-Oauth-Scopes": [
+                    "public"
+                ],
+                "X-Accepted-Oauth-Scopes": [
+                    "public"
+                ],
+                "Vary": [
+                    "Accept,Accept-Encoding"
+                ],
+                "X-Rack-Cache": [
+                    "invalidate, pass"
+                ],
+                "Access-Control-Allow-Origin": [
+                    "*"
+                ],
+                "Access-Control-Allow-Credentials": [
+                    "true"
+                ],
+                "Access-Control-Expose-Headers": [
+                    "Content-Type, Cache-Control, Expires, Etag, Last-Modified, X-Request-ID"
+                ],
+                "Via": [
+                    "1.1 vegur"
+                ]
+            },
+            "body": {
+                "error": "Must pass 'github_token' parameter"
+            },
+            "body_format": "json"
+        }
+    }
+]

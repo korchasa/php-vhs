@@ -18,8 +18,4 @@ RUN echo ">>> Install tools" && \
 WORKDIR /app
 COPY . .
 
-RUN echo ">>> Update sources" && \
-#    composer update && \
-    echo ">>> Test" && \
-    composer infect
-#    composer check
+CMD composer unit

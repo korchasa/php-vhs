@@ -37,7 +37,7 @@ class MyAwesomePackagistClientTest extends TestCase
         $this->packagistClient = $client;
     }
 
-    public function testSuccessSignUp()
+    public function testSuccessSignUp(): void
     {
         $this->assertVhs(function () {
             $packageName = $this->packagistClient->getMyPackageName();

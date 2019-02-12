@@ -2,159 +2,86 @@
 
 namespace korchasa\Vhs;
 
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
-use korchasa\matched\AssertMatchedTrait;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class Cassette
 {
-    use AssertMatchedTrait;
-
-    protected $record;
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $isEmpty;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $path;
+    /** @var Converter */
+    private $converter;
+    /** @var Record[]  */
+    protected $records = [];
 
-    /**
-     * @var string
-     */
-    protected $name;
-
-    protected $request;
-    protected $response;
-
-    public function __construct(string $path, string $name)
+    public function __construct(string $path, array $records = [])
     {
         $this->path = $path;
-        $this->name = $name;
+        $this->records = $records;
+        $this->converter = new Converter();
     }
 
-    /**
-     * @param RequestInterface $request
-     * @return Cassette
-     */
-    public function setRequest(RequestInterface $request): Cassette
+    public function addRecord(Record $record)
     {
-        $body = $request->getBody()->getContents();
-        $request->getBody()->rewind();
-        $json = json_decode($body);
-        $this->record['request'] = [
-            'uri' => (string) $request->getUri(),
-            'method' => $request->getMethod(),
-            'body_format' => $json ? 'json' : 'raw',
-            'headers' => $request->getHeaders(),
-            'body' => $json ?: $body
-        ];
+        $this->records[] = $record;
         return $this;
     }
 
-    /**
-     * @return Request
-     */
-    public function buildPsrRequest(): Request
+    public function modifyLastRecord(callable $modifier): void
     {
-        return new Request(
-            $this->record['request']['method'] ?? 'GET',
-            $this->record['request']['uri'] ?? 'localhost',
-            $this->record['request']['headers'] ?? [],
-            $this->record['request']['body'] ?? ''
-        );
-    }
-
-    /**
-     * @param ResponseInterface $response
-     * @return Cassette
-     */
-    public function setResponse(ResponseInterface $response): Cassette
-    {
-        $body = $response->getBody()->getContents();
-        $response->getBody()->rewind();
-        $json = json_decode($body);
-        $this->record['response'] = [
-            'status' => $response->getStatusCode(),
-            'headers' => $response->getHeaders(),
-            'body_format' => null !== $json  ? 'json' : 'raw',
-            'body' => $json ?: $body
-        ];
-        return $this;
-    }
-
-    /**
-     * @return Response
-     */
-    public function buildPsrResponse(): Response
-    {
-        return new Response(
-            $this->record['response']['status'] ?? 200,
-            $this->record['response']['headers'] ?? [],
-            $this->record['response']['body_format'] === 'json'
-                ? json_encode($this->record['response']['body'])
-                : $this->record['response']['body']
-        );
-    }
-
-    public function getAllRecordJson(): string
-    {
-        return $this->encode($this->record);
-    }
-
-    public function getRequestJson(): string
-    {
-        return $this->encode($this->record['request']);
-    }
-
-    /**
-     * @return BodyConstraint
-     */
-    public function bodyConstraint(): BodyConstraint
-    {
-        if ('json' === $this->record['response']['body_format']) {
-            return new BodyConstraint($this->record['response']['body'], true);
+        $i = count($this->records) - 1;
+        if (-1 === $i) {
+            return;
         }
-
-        return new BodyConstraint($this->record['response']['body'], false);
+        $this->records[$i] = $modifier($this->records[$i]);
     }
 
-    public function haveRecord(): bool
+    /**
+     * @return Record[]
+     */
+    public function records(): array
+    {
+        return $this->records;
+    }
+
+    public function isSaved(): bool
     {
         return file_exists($this->path());
     }
 
-    public function saveRecord()
+    public function save()
     {
-        file_put_contents($this->path(), $this->getAllRecordJson());
+        file_put_contents($this->path(), $this->converter->serialize($this));
     }
 
-    public function loadRecord()
+    public function load()
     {
         $res = file_get_contents($this->path());
         if (false === $res) {
-            throw new \Exception(error_get_last()['message']);
+            throw new \BadMethodCallException(error_get_last()['message']);
         }
-        $this->record = $this->decode($res);
+        try {
+            $this->converter->unserialize($res, $this);
+        } catch (\Throwable $e) {
+            throw new \LogicException(
+                sprintf("Can't decode cassette `%s`: %s", $this->path, $e->getMessage()),
+                $e->getCode(),
+                $e
+            );
+        }
+
         return $this;
+    }
+
+    public function getSerialized(): string
+    {
+        return $this->converter->serialize($this);
     }
 
     public function path(): string
     {
         return $this->path;
-    }
-
-    private function encode($mixed): string
-    {
-        return json_encode($mixed, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    }
-
-    private function decode(string $json)
-    {
-        return json_decode($json, true);
     }
 }

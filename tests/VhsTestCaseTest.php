@@ -2,7 +2,7 @@
 
 namespace korchasa\Vhs\Tests;
 
-use korchasa\matched\AssertMatchedTrait;
+use korchasa\Vhs\Config;
 use korchasa\Vhs\VhsTestCase;
 use PHPUnit\Framework\IncompleteTestError;
 use PHPUnit\Framework\TestCase;
@@ -10,92 +10,63 @@ use PHPUnit\Framework\TestCase;
 class VhsTestCaseTest extends TestCase
 {
     use VhsTestCase;
-    use AssertMatchedTrait;
 
-    /** @var MyAwesomePackagistClient */
+    /** @var AwesomeClient */
     private $packagistClient;
 
     public function setUp()
     {
-        $client = new MyAwesomePackagistClient();
-        $client->setGuzzle($this->connectVhs($client->getGuzzle()));
+        $client = new AwesomeClient();
+        $client->setGuzzle(
+            $this->connectVhs(
+                $client->getGuzzle(),
+                new Config(__DIR__.'/vhs_cassettes_VhsTestCaseTest')
+            )
+        );
         $this->packagistClient = $client;
     }
 
-    public function testAssertVhs()
+    public function testAssertVhs(): void
     {
         $this->assertVhs(function () {
-            $packageName = $this->packagistClient->getMyPackageName();
-            $this->assertEquals('korchasa/php-vhs', $packageName);
+            $this->packagistClient->getFirstTagName();
         });
 
         $this->assertEquals(
-            __DIR__.'/vhs_cassettes/VhsTestCaseTest_testAssertVhs.json',
+            __DIR__.'/vhs_cassettes_VhsTestCaseTest/VhsTestCaseTest_testAssertVhs.json',
             $this->currentVhsCassette->path()
         );
         $this->assertFileExists($this->currentVhsCassette->path());
     }
 
-    public function testAssertVhsOnRecord()
+    public function testWithCustomCassetteName(): void
     {
-        $cassettePath = $this->vhsConfig->resolveCassettesDir(__CLASS__).'/record_test.json';
+        $this->assertVhs(function () {
+            $this->packagistClient->getFirstTagName();
+        }, 'testCustomName');
+
+        $this->assertEquals(
+            __DIR__.'/vhs_cassettes_VhsTestCaseTest/testCustomName.json',
+            $this->currentVhsCassette->path()
+        );
+        $this->assertFileExists($this->currentVhsCassette->path());
+    }
+
+    public function testIncompleteOnFirstRun(): void
+    {
+        $cassettePath = $this->vhsConfig->resolveCassettePath(__CLASS__, 'testAssertVhsIncompleteOnFirstRun');
         if (file_exists($cassettePath)) {
             unlink($cassettePath);
         }
 
         try {
             $this->assertVhs(function () {
-                $packageName = $this->packagistClient->getMyPackageName();
+                $packageName = $this->packagistClient->getFirstTagName();
                 $this->assertEquals('korchasa/php-vhs', $packageName);
-            }, 'record_test');
+            }, 'testAssertVhsIncompleteOnFirstRun');
             $this->fail('Test must be incomplete');
         } catch (IncompleteTestError $e) {
+            $this->assertFileExists($cassettePath);
         }
-
-        $this->assertFileExists($cassettePath);
-        $body = object_get(
-            json_decode($this->currentVhsCassette->getAllRecordJson()),
-            'response.body'
-        );
-
-        $this->assertNotEquals('', $body);
-    }
-
-    public function testAssertVhsWithCustomCassetteName()
-    {
-        $this->assertVhs(function () {
-            $packageName = $this->packagistClient->getMyPackageName();
-            $this->assertEquals('korchasa/php-vhs', $packageName);
-        }, 'testCustomName');
-
-        $this->assertEquals(
-            __DIR__.'/vhs_cassettes/testCustomName.json',
-            $this->currentVhsCassette->path()
-        );
-        $this->assertFileExists($this->currentVhsCassette->path());
-    }
-
-    public function testAssertVhsFail()
-    {
-        try {
-            $this->assertVhs(function () {
-                $packageName = $this->packagistClient->getMyPackageName();
-                $this->assertEquals('korchasa/php-vhs', $packageName);
-            });
-            $this->fail();
-        } catch (\Exception $e) {
-            $this->assertEquals('500 response from packagist.org', $e->getMessage());
-        }
-    }
-
-    public function testSuccessSignUpWithNotExistedHostAndRecordedCassette()
-    {
-        $client = new MyAwesomePackagistClient('some-not-existent-site.foobar');
-        $client->setGuzzle($this->connectVhs($client->getGuzzle()));
-
-        $this->assertVhs(function () use ($client) {
-            $packageName = $client->getMyPackageName();
-            $this->assertEquals('korchasa/php-vhs', $packageName);
-        });
     }
 }

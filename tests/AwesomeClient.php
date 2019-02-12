@@ -4,14 +4,14 @@ namespace korchasa\Vhs\Tests;
 
 use GuzzleHttp\Client;
 
-class MyAwesomePackagistClient
+class AwesomeClient
 {
     protected $guzzle;
 
-    public function __construct(string $host = 'packagist.org')
+    public function __construct()
     {
         $this->guzzle = new Client([
-            'base_uri' => "https://$host/",
+            'base_uri' => 'https://api.travis-ci.org/',
             'http_errors' => false,
         ]);
     }
@@ -27,14 +27,18 @@ class MyAwesomePackagistClient
         return $this->guzzle;
     }
 
-    public function getMyPackageName(): string
+    public function auth()
     {
-        $response = $this->guzzle->get('p/korchasa/php-vhs.json');
-        if (200 !== $response->getStatusCode()) {
-            throw new \RuntimeException('500 response from packagist.org');
-        }
+        $response = $this->guzzle->post('/auth/github');
+        $responseJson = $response->getBody()->getContents();
+        return json_decode($responseJson, true);
+    }
+
+    public function getFirstTagName(): string
+    {
+        $response = $this->guzzle->get('/repos/korchasa/php-vhs');
         $responseJson = $response->getBody()->getContents();
         $responseData = json_decode($responseJson, true);
-        return $responseData['packages']['korchasa/php-vhs']['0.1-alpha']['name'];
+        return $responseData['slug'];
     }
 }
