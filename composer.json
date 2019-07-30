@@ -50,7 +50,7 @@
         ],
         "style": "phpcs --standard=PSR2 src tests",
         "analyze": "phpstan analyse -l5 src tests",
-        "infect": "infection --test-framework=phpunit --min-msi=70 --min-covered-msi=70 --ignore-msi-with-no-mutations --ansi -s",
+        "infect": "infection --test-framework=phpunit --min-msi=65 --min-covered-msi=65 --ignore-msi-with-no-mutations --ansi -s",
         "unit": "phpunit",
         "style-fix": "phpcbf --standard=PSR2 -p src tests",
         "doc": "@php doc.php",
