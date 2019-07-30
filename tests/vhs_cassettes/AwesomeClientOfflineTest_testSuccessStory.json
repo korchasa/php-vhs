@@ -1,0 +1,44 @@
+[
+    {
+        "request": {
+            "uri": "https:\/\/httpbin.org\/anything?name=korchasa\/php-vhs",
+            "method": "GET",
+            "headers": {
+                "X-Foo": [
+                    "Bar"
+                ],
+                "Host": [
+                    "httpbin.org"
+                ]
+            },
+            "body": "",
+            "body_format": "raw"
+        },
+        "response": {
+            "status": 200,
+            "headers": {
+                "Content-Type": [
+                    "application\/json"
+                ]
+            },
+            "body": {
+                "args": {
+                    "name": "korchasa\/php-vhs"
+                },
+                "data": "",
+                "files": {},
+                "form": {},
+                "headers": {
+                    "Host": "httpbin.org",
+                    "User-Agent": "***",
+                    "X-Foo": "Bar"
+                },
+                "json": null,
+                "method": "GET",
+                "origin": "***",
+                "url": "https:\/\/httpbin.org\/anything?name=korchasa%2Fphp-vhs"
+            },
+            "body_format": "json"
+        }
+    }
+]

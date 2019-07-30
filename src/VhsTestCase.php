@@ -5,6 +5,7 @@ namespace korchasa\Vhs;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
 use korchasa\matched\JsonConstraint;
 use PHPUnit\Framework\IncompleteTestError;
 use Psr\Http\Message\RequestInterface;
@@ -12,6 +13,8 @@ use Psr\Http\Message\ResponseInterface;
 
 trait VhsTestCase
 {
+    /** @var bool */
+    protected $offline;
     /**
      * @var Config
      */
@@ -24,11 +27,13 @@ trait VhsTestCase
 
     /**
      * @param Client $client
+     * @param bool $offline
      * @param Config|null $config
      * @return Client
      */
-    protected function connectVhs(Client $client, Config $config = null): Client
+    protected function connectVhs(Client $client, bool $offline = false, Config $config = null): Client
     {
+        $this->offline = $offline;
         $this->vhsConfig = $config ?: new Config();
         $guzzleConfig = $client->getConfig();
         $guzzleConfig['handler'] = $this->connectToStack($guzzleConfig['handler']);
@@ -37,7 +42,10 @@ trait VhsTestCase
 
     private function connectToStack(HandlerStack $stack): HandlerStack
     {
-        $stack->push(Middleware::mapRequest(function (RequestInterface $request) {
+        $stack->before('http_errors', Middleware::mapRequest(function (RequestInterface $request) {
+            if ($this->offline && $this->currentVhsCassette->isSaved()) {
+                return $this->createNullRequest();
+            }
             $record = new Record();
             $record->request = $request;
             $this->currentVhsCassette->addRecord($record);
@@ -45,11 +53,19 @@ trait VhsTestCase
         }));
 
         $stack->push(Middleware::mapResponse(function (ResponseInterface $response) {
-            $this->currentVhsCassette->modifyLastRecord(function (Record $record) use ($response) {
-                $record->response = $response;
-                return $record;
-            });
-            return $response;
+            if ($this->offline && $this->currentVhsCassette->isSaved()) {
+                $record = $this->currentVhsCassette->load()->records()[0];
+                return $record->response;
+            } else {
+                $this->currentVhsCassette->modifyLastRecord(
+                    function (Record $record) use ($response) {
+                        $record->response = $response;
+
+                        return $record;
+                    }
+                );
+                return $response;
+            }
         }));
 
         return $stack;
@@ -79,5 +95,10 @@ trait VhsTestCase
         static::assertThat($this->currentVhsCassette->getSerialized(), $constraint);
 
         return $cassetteName;
+    }
+
+    public function createNullRequest(): Request
+    {
+        return new Request('get', 'http://google.com/');
     }
 }

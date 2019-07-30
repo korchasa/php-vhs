@@ -6,14 +6,15 @@ use ReflectionClass;
 
 class Config
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $cassettesDir;
+    /** @var bool */
+    private $offline;
 
-    public function __construct(string $cassettesDir = null)
+    public function __construct(string $cassettesDir = null, $offline = false)
     {
         $this->cassettesDir = $cassettesDir;
+        $this->offline = $offline;
     }
 
     /**
@@ -24,10 +25,7 @@ class Config
      */
     public function resolveCassettePath(string $testClass, string $cassetteName): string
     {
-        return $this->resolveCassettesDir($testClass)
-            .DIRECTORY_SEPARATOR
-            .$cassetteName
-            .'.json';
+        return $this->resolveCassettesDir($testClass).DIRECTORY_SEPARATOR.$cassetteName.'.json';
     }
 
     /**

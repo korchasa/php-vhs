@@ -8,10 +8,10 @@ class AwesomeClient
 {
     protected $guzzle;
 
-    public function __construct()
+    public function __construct($host)
     {
         $this->guzzle = new Client([
-            'base_uri' => 'https://httpbin.org/',
+            'base_uri' => "https://$host/",
             'http_errors' => false,
             'headers' => [
                 'Accept' => 'application/json',

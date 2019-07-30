@@ -5,7 +5,7 @@ namespace korchasa\Vhs\Tests;
 use korchasa\Vhs\VhsTestCase;
 use PHPUnit\Framework\TestCase;
 
-class AwesomeClientTest extends TestCase
+class AwesomeClientOfflineTest extends TestCase
 {
     use VhsTestCase;
 
@@ -14,8 +14,8 @@ class AwesomeClientTest extends TestCase
 
     public function setUp()
     {
-        $client = new AwesomeClient("httpbin.org");
-        $client->setGuzzle($this->connectVhs($client->getGuzzle()));
+        $client = new AwesomeClient("bla-bla-bla-bla-bla-bla.commmm");
+        $client->setGuzzle($this->connectVhs($client->getGuzzle(), true));
         $this->packagistClient = $client;
     }
 
@@ -25,14 +25,6 @@ class AwesomeClientTest extends TestCase
             $packageName = $this->packagistClient->getFirstTagName();
             $this->assertEquals('korchasa/php-vhs', $packageName);
         });
-    }
-
-    public function testWithCustomCassetteName(): void
-    {
-        $this->assertVhs(function () {
-            $packageName = $this->packagistClient->getFirstTagName();
-            $this->assertEquals('korchasa/php-vhs', $packageName);
-        }, 'testCustomName');
     }
 
     public function testWithFail(): void

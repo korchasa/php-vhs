@@ -16,10 +16,11 @@ class VhsTestCaseTest extends TestCase
 
     public function setUp()
     {
-        $client = new AwesomeClient();
+        $client = new AwesomeClient("httpbin.org");
         $client->setGuzzle(
             $this->connectVhs(
                 $client->getGuzzle(),
+                false,
                 new Config(__DIR__.'/vhs_cassettes_VhsTestCaseTest')
             )
         );

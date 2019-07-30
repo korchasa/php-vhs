@@ -1,0 +1,27 @@
+[
+    {
+        "request": {
+            "uri": "https:\/\/httpbin.org\/status\/403",
+            "method": "POST",
+            "headers": {
+                "Accept": [
+                    "application\/json"
+                ],
+                "X-Foo": [
+                    "Bar"
+                ],
+                "Host": [
+                    "httpbin.org"
+                ]
+            },
+            "body": "",
+            "body_format": "raw"
+        },
+        "response": {
+            "status": 403,
+            "headers": {},
+            "body": "",
+            "body_format": "raw"
+        }
+    }
+]
