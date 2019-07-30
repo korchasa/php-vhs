@@ -1,4 +1,5 @@
-FROM alpine:edge
+
+FROM alpine:3.10
 
 RUN echo ">>> Install tools" && \
     apk add --no-cache wget bash ca-certificates && \
@@ -9,13 +10,10 @@ RUN echo ">>> Install tools" && \
         php7-pecl-xdebug php7-tokenizer php7-curl && \
     echo "zend_extension=xdebug.so" > /etc/php7/conf.d/xdebug.ini && \
     echo ">>> Install composer" && \
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-    php -r "if (hash_file('sha384', 'composer-setup.php') === '93b54496392c062774670ac18b134c3b3a95e5a5e5c8f1a9f115f203b75bf9a129d5daa8ba6a13e2cc8a1da0806388a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
-    php composer-setup.php --install-dir=/bin --filename=composer && \
-    php -r "unlink('composer-setup.php');" && \
+    wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet --install-dir /bin --filename composer && \
     composer global require "hirak/prestissimo:^0.3.8"
 
 WORKDIR /app
 COPY . .
 
-CMD composer unit
+RUN composer check

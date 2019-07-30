@@ -4,9 +4,6 @@
             "uri": "https:\/\/api.travis-ci.org\/repos\/korchasa\/php-vhs",
             "method": "GET",
             "headers": {
-                "User-Agent": [
-                    "GuzzleHttp\/6.3.3 curl\/7.64.0 PHP\/7.3.2"
-                ],
                 "Host": [
                     "api.travis-ci.org"
                 ]
@@ -17,68 +14,8 @@
         "response": {
             "status": 200,
             "headers": {
-                "Connection": [
-                    "keep-alive"
-                ],
-                "Server": [
-                    "nginx"
-                ],
-                "Date": [
-                    "Tue, 12 Feb 2019 00:27:35 GMT"
-                ],
                 "Content-Type": [
                     "application\/json;charset=utf-8"
-                ],
-                "Content-Length": [
-                    "1204"
-                ],
-                "Strict-Transport-Security": [
-                    "max-age=31536000"
-                ],
-                "X-Endpoint": [
-                    "Travis::Api::App::Endpoint::Repos"
-                ],
-                "X-Pattern": [
-                    "\/:owner_name\/:name"
-                ],
-                "X-Oauth-Scopes": [
-                    "public"
-                ],
-                "X-Accepted-Oauth-Scopes": [
-                    "public"
-                ],
-                "Vary": [
-                    "Accept,Accept-Encoding"
-                ],
-                "Cache-Control": [
-                    "no-cache"
-                ],
-                "Etag": [
-                    "\"9f9335dc74e86e1232c8b2895704cc85\""
-                ],
-                "X-Content-Digest": [
-                    "bf3fe87c5a4f1434953cb01698a38b09be999f0f"
-                ],
-                "Age": [
-                    "0"
-                ],
-                "X-Rack-Cache": [
-                    "miss, store"
-                ],
-                "X-Request-Id": [
-                    "ead2b6e6-e8aa-4f93-a097-c250be718c7e"
-                ],
-                "Access-Control-Allow-Origin": [
-                    "*"
-                ],
-                "Access-Control-Allow-Credentials": [
-                    "true"
-                ],
-                "Access-Control-Expose-Headers": [
-                    "Content-Type, Cache-Control, Expires, Etag, Last-Modified, X-Request-ID"
-                ],
-                "Via": [
-                    "1.1 vegur"
                 ]
             },
             "body": {

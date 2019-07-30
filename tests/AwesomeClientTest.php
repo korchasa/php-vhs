@@ -3,7 +3,6 @@
 namespace korchasa\Vhs\Tests;
 
 use korchasa\Vhs\VhsTestCase;
-use PHPUnit\Framework\IncompleteTestError;
 use PHPUnit\Framework\TestCase;
 
 class AwesomeClientTest extends TestCase

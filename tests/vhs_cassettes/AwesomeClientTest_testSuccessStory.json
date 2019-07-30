@@ -4,9 +4,6 @@
             "uri": "https:\/\/api.travis-ci.org\/repos\/korchasa\/php-vhs",
             "method": "GET",
             "headers": {
-                "User-Agent": [
-                    "GuzzleHttp\/6.3.3 curl\/7.64.0 PHP\/7.3.2"
-                ],
                 "Host": [
                     "api.travis-ci.org"
                 ]
@@ -17,56 +14,8 @@
         "response": {
             "status": 200,
             "headers": {
-                "Connection": [
-                    "keep-alive"
-                ],
-                "Server": [
-                    "nginx"
-                ],
                 "Content-Type": [
                     "application\/json;charset=utf-8"
-                ],
-                "Content-Length": [
-                    "1204"
-                ],
-                "Strict-Transport-Security": [
-                    "max-age=31536000"
-                ],
-                "X-Endpoint": [
-                    "Travis::Api::App::Endpoint::Repos"
-                ],
-                "X-Pattern": [
-                    "\/:owner_name\/:name"
-                ],
-                "X-Oauth-Scopes": [
-                    "public"
-                ],
-                "X-Accepted-Oauth-Scopes": [
-                    "public"
-                ],
-                "Vary": [
-                    "Accept,Accept-Encoding"
-                ],
-                "Cache-Control": [
-                    "no-cache"
-                ],
-                "Age": [
-                    "0"
-                ],
-                "X-Rack-Cache": [
-                    "miss, store"
-                ],
-                "Access-Control-Allow-Origin": [
-                    "*"
-                ],
-                "Access-Control-Allow-Credentials": [
-                    "true"
-                ],
-                "Access-Control-Expose-Headers": [
-                    "Content-Type, Cache-Control, Expires, Etag, Last-Modified, X-Request-ID"
-                ],
-                "Via": [
-                    "1.1 vegur"
                 ]
             },
             "body": {
@@ -74,14 +23,14 @@
                 "slug": "korchasa\/php-vhs",
                 "description": "HTTP request\/response recording (like VCR) library for PHP",
                 "public_key": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAv5MnZgDyO31QiefPO+iz\n9A3ysIZuVW7JWgMABou+kjbeWCWP99WfmD8tCbJWxMBll8lMbWiY06jNt4zBlp+P\nDn\/ch0meGPQkzkIojRs4ep3B9j1Tp\/Y64g0hY2c2BD5gDWniAiaOU5mxv2RwvBmw\ndVEwf1P\/RtZ4vMnzodaRsty1vPMP\/9sGM1o0XCjCg+aryD1j7tteJ6CsfxDWJGhg\nlBshH073OkN1yGKqT7ADbQk\/YaIhEZ8xuLiDFG84TzCptfUhDOUgNHvdETQSM3rY\nt442EbctN4veW934YMNJf4gwTW966jUAIAhEx59lZdOlXQD9qmzGsfuU9uEaMUiY\ni8T6xYwrT9a+oX\/gqHG0Bdm75jveK65XWDXmjXusLaziCZ5gMOi+JOZ1mWH60Lx+\nbspLmwTAsL6Uo54PAG2KtqE7imuqdacmB\/TIcA1B\/8Pdeti+tphP+4nvxqhRMYbm\n\/STGqibNrZ\/2sXnXUdZ\/7n1tBcUVnRgTVnYhw2XlrI3I054iOIbmPTPRcWQTI0da\nx2bVejrbOgu6mkZQ0cNICplwnQ5AW2GGQL3flshj8I3pgI0CZFMBPAdhzmGEoq9U\nUn0ziqy5emscw\/kFrFPzqLHwsvpcO0kUEMWYRlrJnQjMsDkFd9fMB3hzTS8OcBOT\nzQeEIWyTH1G5mVr2gSOxUicCAwEAAQ==\n-----END PUBLIC KEY-----\n",
-                "last_build_id": 491768509,
-                "last_build_number": "491",
+                "last_build_id": "***",
+                "last_build_number": "***",
                 "last_build_status": 1,
                 "last_build_result": 1,
-                "last_build_duration": 740,
+                "last_build_duration": "***",
                 "last_build_language": null,
-                "last_build_started_at": "2019-02-11T18:24:35Z",
-                "last_build_finished_at": "2019-02-11T18:28:33Z",
+                "last_build_started_at": "***",
+                "last_build_finished_at": "***",
                 "active": true
             },
             "body_format": "json"

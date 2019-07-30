@@ -37,7 +37,7 @@ trait VhsTestCase
 
     private function connectToStack(HandlerStack $stack): HandlerStack
     {
-        $stack->before('http_errors', Middleware::mapRequest(function (RequestInterface $request) {
+        $stack->push(Middleware::mapRequest(function (RequestInterface $request) {
             $record = new Record();
             $record->request = $request;
             $this->currentVhsCassette->addRecord($record);
