@@ -39,7 +39,7 @@ class AwesomeClientTest extends TestCase
     {
         $this->assertVhs(function () {
             $resp = $this->packagistClient->auth();
-            $this->assertEquals(['error' => "Must pass 'github_token' parameter"], $resp);
+            $this->assertEquals(403, $resp);
         });
     }
 }

@@ -1,27 +1,27 @@
 [
     {
         "request": {
-            "uri": "https:\/\/api.travis-ci.org\/auth\/github",
+            "uri": "https:\/\/httpbin.org\/status\/403",
             "method": "POST",
             "headers": {
+                "Accept": [
+                    "application\/json"
+                ],
+                "X-Foo": [
+                    "Bar"
+                ],
                 "Host": [
-                    "api.travis-ci.org"
+                    "httpbin.org"
                 ]
             },
             "body": "",
             "body_format": "raw"
         },
         "response": {
-            "status": 422,
-            "headers": {
-                "Content-Type": [
-                    "application\/json"
-                ]
-            },
-            "body": {
-                "error": "Must pass 'github_token' parameter"
-            },
-            "body_format": "json"
+            "status": 403,
+            "headers": {},
+            "body": "",
+            "body_format": "raw"
         }
     }
 ]

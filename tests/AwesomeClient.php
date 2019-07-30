@@ -11,8 +11,12 @@ class AwesomeClient
     public function __construct()
     {
         $this->guzzle = new Client([
-            'base_uri' => 'https://api.travis-ci.org/',
+            'base_uri' => 'https://httpbin.org/',
             'http_errors' => false,
+            'headers' => [
+                'Accept' => 'application/json',
+                'X-Foo' => 'Bar',
+            ],
         ]);
     }
 
@@ -27,18 +31,17 @@ class AwesomeClient
         return $this->guzzle;
     }
 
-    public function auth()
+    public function auth(): int
     {
-        $response = $this->guzzle->post('/auth/github');
-        $responseJson = $response->getBody()->getContents();
-        return json_decode($responseJson, true);
+        $resp = $this->guzzle->post('/status/403');
+        return $resp->getStatusCode();
     }
 
     public function getFirstTagName(): string
     {
-        $response = $this->guzzle->get('/repos/korchasa/php-vhs');
+        $response = $this->guzzle->get('/anything?name=korchasa/php-vhs');
         $responseJson = $response->getBody()->getContents();
         $responseData = json_decode($responseJson, true);
-        return $responseData['slug'];
+        return $responseData['args']['name'];
     }
 }

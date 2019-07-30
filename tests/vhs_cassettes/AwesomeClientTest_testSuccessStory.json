@@ -1,11 +1,14 @@
 [
     {
         "request": {
-            "uri": "https:\/\/api.travis-ci.org\/repos\/korchasa\/php-vhs",
+            "uri": "https:\/\/httpbin.org\/anything?name=korchasa\/php-vhs",
             "method": "GET",
             "headers": {
+                "X-Foo": [
+                    "Bar"
+                ],
                 "Host": [
-                    "api.travis-ci.org"
+                    "httpbin.org"
                 ]
             },
             "body": "",
@@ -15,23 +18,25 @@
             "status": 200,
             "headers": {
                 "Content-Type": [
-                    "application\/json;charset=utf-8"
+                    "application\/json"
                 ]
             },
             "body": {
-                "id": 14712947,
-                "slug": "korchasa\/php-vhs",
-                "description": "HTTP request\/response recording (like VCR) library for PHP",
-                "public_key": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAv5MnZgDyO31QiefPO+iz\n9A3ysIZuVW7JWgMABou+kjbeWCWP99WfmD8tCbJWxMBll8lMbWiY06jNt4zBlp+P\nDn\/ch0meGPQkzkIojRs4ep3B9j1Tp\/Y64g0hY2c2BD5gDWniAiaOU5mxv2RwvBmw\ndVEwf1P\/RtZ4vMnzodaRsty1vPMP\/9sGM1o0XCjCg+aryD1j7tteJ6CsfxDWJGhg\nlBshH073OkN1yGKqT7ADbQk\/YaIhEZ8xuLiDFG84TzCptfUhDOUgNHvdETQSM3rY\nt442EbctN4veW934YMNJf4gwTW966jUAIAhEx59lZdOlXQD9qmzGsfuU9uEaMUiY\ni8T6xYwrT9a+oX\/gqHG0Bdm75jveK65XWDXmjXusLaziCZ5gMOi+JOZ1mWH60Lx+\nbspLmwTAsL6Uo54PAG2KtqE7imuqdacmB\/TIcA1B\/8Pdeti+tphP+4nvxqhRMYbm\n\/STGqibNrZ\/2sXnXUdZ\/7n1tBcUVnRgTVnYhw2XlrI3I054iOIbmPTPRcWQTI0da\nx2bVejrbOgu6mkZQ0cNICplwnQ5AW2GGQL3flshj8I3pgI0CZFMBPAdhzmGEoq9U\nUn0ziqy5emscw\/kFrFPzqLHwsvpcO0kUEMWYRlrJnQjMsDkFd9fMB3hzTS8OcBOT\nzQeEIWyTH1G5mVr2gSOxUicCAwEAAQ==\n-----END PUBLIC KEY-----\n",
-                "last_build_id": "***",
-                "last_build_number": "***",
-                "last_build_status": 1,
-                "last_build_result": 1,
-                "last_build_duration": "***",
-                "last_build_language": null,
-                "last_build_started_at": "***",
-                "last_build_finished_at": "***",
-                "active": true
+                "args": {
+                    "name": "korchasa\/php-vhs"
+                },
+                "data": "",
+                "files": {},
+                "form": {},
+                "headers": {
+                    "Host": "httpbin.org",
+                    "User-Agent": "***",
+                    "X-Foo": "Bar"
+                },
+                "json": null,
+                "method": "GET",
+                "origin": "***",
+                "url": "https:\/\/httpbin.org\/anything?name=korchasa%2Fphp-vhs"
             },
             "body_format": "json"
         }
