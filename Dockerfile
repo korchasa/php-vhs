@@ -10,8 +10,7 @@ RUN echo ">>> Install tools" && \
         php7-pecl-xdebug php7-tokenizer php7-curl && \
     echo "zend_extension=xdebug.so" > /etc/php7/conf.d/xdebug.ini && \
     echo ">>> Install composer" && \
-    wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet --install-dir /bin --filename composer && \
-    composer global require "hirak/prestissimo:^0.3.8"
+    wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet --install-dir /bin --filename composer
 
 WORKDIR /app
 COPY . .
