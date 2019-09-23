@@ -11,17 +11,17 @@
 composer require --dev korchasa/php-vhs
 ```
 
-## Usage for client testing:
+## Client testing:
  
 ### 1. Write test with ```VhsTestCase``` trait. Surround client calls with ```assertVhs()```.
 
->>>tests/MyAwesomePackagistClientTest.php<<<
+>>>tests/AwesomeClientOfflineTest.php<<<
 
 ### 2. Run test to record cassette (test will be incomplete)
 
-Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientTest_testSuccessSignUp.json`` content:
+Cassette ``tests/vhs_cassettes/AwesomeClientOfflineTest_testSuccessStory.json`` content:
 
->>>tests/vhs_cassettes/MyAwesomePackagistClientTest_testSuccessSignUp.json<<<
+>>>tests/vhs_cassettes/AwesomeClientOfflineTest_testSuccessStory.json<<<
 
 ### 3. Run test again
 
@@ -32,7 +32,7 @@ If the cassette is already exists, then we will check the request and replace th
 
 ### 1. Write test with ```VhsServerTestCase``` trait. 
 
->>>tests/MyAwesomePackagistServerTest.php<<<
+>>>tests/AwesomeClientTest.php<<<
 
 ### 2. Run test to record cassette (test will be incomplete)
 
@@ -40,9 +40,9 @@ If the cassette is already exists, then we will check the request and replace th
 
 Remove from cassette unnecessary fields and replace dynamic parts with ```***``` sign.
 
-Cassette ``tests/vhs_cassettes/MyAwesomePackagistServerTest_testSuccessSignUp.json`` content:
+Cassette ``tests/vhs_cassettes/AwesomeClientTest_testSuccessStory.json`` content:
  
->>>tests/vhs_cassettes/MyAwesomePackagistServerTest_testSuccessSignUpResponse.json<<< 
+>>>tests/vhs_cassettes/AwesomeClientTest_testSuccessStory.json<<< 
 
 ### 4. Run test again
 
