@@ -11,7 +11,7 @@
 composer require --dev korchasa/php-vhs
 ```
 
-## Usage for client testing:
+## Client testing:
  
 ### 1. Write test with ```VhsTestCase``` trait. Surround client calls with ```assertVhs()```.
 
@@ -23,25 +23,33 @@ namespace korchasa\Vhs\Tests;
 use korchasa\Vhs\VhsTestCase;
 use PHPUnit\Framework\TestCase;
 
-class MyAwesomePackagistClientTest extends TestCase
+class AwesomeClientOfflineTest extends TestCase
 {
     use VhsTestCase;
 
-    /** @var MyAwesomePackagistClient */
+    /** @var AwesomeClient */
     private $packagistClient;
 
     public function setUp()
     {
-        $client = new MyAwesomePackagistClient();
-        $client->setGuzzle($this->connectVhs($client->getGuzzle()));
+        $client = new AwesomeClient("bla-bla-bla-bla-bla-bla.commmm");
+        $client->setGuzzle($this->connectVhs($client->getGuzzle(), $offline = true));
         $this->packagistClient = $client;
     }
 
-    public function testSuccessSignUp(): void
+    public function testSuccessStory(): void
     {
         $this->assertVhs(function () {
-            $packageName = $this->packagistClient->getMyPackageName();
+            $packageName = $this->packagistClient->getFirstTagName();
             $this->assertEquals('korchasa/php-vhs', $packageName);
+        });
+    }
+
+    public function testWithFail(): void
+    {
+        $this->assertVhs(function () {
+            $resp = $this->packagistClient->auth();
+            $this->assertEquals(403, $resp);
         });
     }
 }
@@ -50,178 +58,55 @@ class MyAwesomePackagistClientTest extends TestCase
 
 ### 2. Run test to record cassette (test will be incomplete)
 
-Cassette ``tests/vhs_cassettes/MyAwesomePackagistClientTest_testSuccessSignUp.json`` content:
+Cassette ``tests/vhs_cassettes/AwesomeClientOfflineTest_testSuccessStory.json`` content:
 
 ```json
-{
-    "request": {
-        "uri": "https:\/\/packagist.org\/p\/korchasa\/php-vhs.json",
-        "method": "GET",
-        "body_format": "raw",
-        "headers": {
-            "User-Agent": [
-                "GuzzleHttp\/6.2.1 curl\/7.54.0 PHP\/7.1.13"
-            ],
-            "Host": [
-                "packagist.org"
-            ]
+[
+    {
+        "request": {
+            "uri": "https:\/\/httpbin.org\/anything?name=korchasa\/php-vhs",
+            "method": "GET",
+            "headers": {
+                "X-Foo": [
+                    "Bar"
+                ],
+                "Host": [
+                    "httpbin.org"
+                ]
+            },
+            "body": "",
+            "body_format": "raw"
         },
-        "body": ""
-    },
-    "response": {
-        "status": 200,
-        "headers": {
-            "Content-Type": [
-                "application\/json"
-            ]
-        },
-        "body_format": "json",
-        "body": {
-            "packages": {
-                "korchasa\/php-vhs": {
-                    "0.1-alpha": {
-                        "name": "korchasa\/php-vhs",
-                        "description": "HTTP request\/response recording and mock library for PHP",
-                        "keywords": [
-                            "http",
-                            "testing",
-                            "phpunit",
-                            "Guzzle",
-                            "vcr"
-                        ],
-                        "homepage": "",
-                        "version": "0.1-alpha",
-                        "version_normalized": "0.1.0.0-alpha",
-                        "license": [
-                            "MIT"
-                        ],
-                        "authors": [
-                            {
-                                "name": "korchasa",
-                                "email": "korchasa@gmail.com"
-...
-
+        "response": {
+            "status": 200,
+            "headers": {
+                "Content-Type": [
+                    "application\/json"
+                ]
+            },
+            "body": {
+                "args": {
+                    "name": "korchasa\/php-vhs"
+                },
+                "data": "",
+                "files": {},
+                "form": {},
+                "headers": {
+                    "Host": "httpbin.org",
+                    "User-Agent": "***",
+                    "X-Foo": "Bar"
+                },
+                "json": null,
+                "method": "GET",
+                "origin": "***",
+                "url": "https:\/\/httpbin.org\/anything?name=korchasa%2Fphp-vhs"
+            },
+            "body_format": "json"
+        }
+    }
+]
 ```
 
 ### 3. Run test again
 
 If the cassette is already exists, then we will check the request and replace the response to the one recorded in the cassette.
-
-
-## Use for server testing:
-
-### 1. Write test with ```VhsServerTestCase``` trait. 
-
-```php
-<?php declare(strict_types=1);
-
-namespace korchasa\Vhs\Tests;
-
-use korchasa\Vhs\VhsServerTestCase;
-use korchasa\Vhs\VhsTestCase;
-use PHPUnit\Framework\TestCase;
-
-class MyAwesomePackagistServerTest extends TestCase
-{
-    use VhsTestCase;
-    use VhsServerTestCase;
-
-    /** @var MyAwesomePackagistClient */
-    private $packagistClient;
-
-    public function setUp()
-    {
-        $client = new MyAwesomePackagistClient();
-        $client->setGuzzle($this->connectVhs($client->getGuzzle()));
-        $this->packagistClient = $client;
-    }
-
-    public function testSuccessSignUpResponse()
-    {
-        $this->assertValidServerResponse(
-            $this->assertVhs(function () {
-                $this->assertEquals(
-                    'korchasa/php-vhs',
-                    $this->packagistClient->getMyPackageName()
-                );
-            })
-        );
-    }
-
-    public function testAllCassettesByPattern()
-    {
-        $this->assertValidServerResponse(__DIR__.'/vhs_cassettes/MyAwesomePackagistServerTest_*');
-    }
-}
-
-```
-
-### 2. Run test to record cassette (test will be incomplete)
-
-### 3. Prepare cassette
-
-Remove from cassette unnecessary fields and replace dynamic parts with ```***``` sign.
-
-Cassette ``tests/vhs_cassettes/MyAwesomePackagistServerTest_testSuccessSignUp.json`` content:
- 
-```json
-{
-    "request": {
-        "uri": "https:\/\/packagist.org\/p\/korchasa\/php-vhs.json",
-        "method": "GET",
-        "body_format": "raw",
-        "headers": {
-            "User-Agent": [
-                "GuzzleHttp\/6.2.1 curl\/7.54.0 PHP\/7.1.13"
-            ],
-            "Host": [
-                "packagist.org"
-            ]
-        },
-        "body": ""
-    },
-    "response": {
-        "status": 200,
-        "headers": {
-            "Content-Type": [
-                "application\/json"
-            ]
-        },
-        "body_format": "json",
-        "body": {
-            "packages": {
-                "korchasa\/php-vhs": {
-                    "0.1-alpha": {
-                        "name": "korchasa\/php-vhs",
-                        "description": "HTTP request\/response recording and mock library for PHP",
-                        "keywords": [
-                            "http",
-                            "testing",
-                            "phpunit",
-                            "Guzzle",
-                            "vcr"
-                        ],
-                        "homepage": "",
-                        "version": "0.1-alpha",
-                        "version_normalized": "0.1.0.0-alpha",
-                        "license": [
-                            "MIT"
-                        ],
-                        "authors": [
-                            {
-                                "name": "korchasa",
-                                "email": "korchasa@gmail.com"
-...
-
-``` 
-
-### 4. Run test again
-
-If the cassette is already exists, then we will check the request and replace the response to the one recorded in the cassette.
-
-## Configuration
-Custom cassettes directory:
-
-In code | phpunit.xml | env vars
-------- | ----------- | --------
-```$this->useVhsCassettesFrom(__DIR__.'./vhs')``` | ```<env name="VHS_DIR" value="./vhs"/>``` | ```VHS_DIR=./vhs ./vendor/bin/phpunit```

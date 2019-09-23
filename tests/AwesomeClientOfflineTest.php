@@ -15,7 +15,7 @@ class AwesomeClientOfflineTest extends TestCase
     public function setUp()
     {
         $client = new AwesomeClient("bla-bla-bla-bla-bla-bla.commmm");
-        $client->setGuzzle($this->connectVhs($client->getGuzzle(), true));
+        $client->setGuzzle($this->connectVhs($client->getGuzzle(), $offline = true));
         $this->packagistClient = $client;
     }
 

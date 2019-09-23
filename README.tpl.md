@@ -26,31 +26,3 @@ Cassette ``tests/vhs_cassettes/AwesomeClientOfflineTest_testSuccessStory.json`` 
 ### 3. Run test again
 
 If the cassette is already exists, then we will check the request and replace the response to the one recorded in the cassette.
-
-
-## Use for server testing:
-
-### 1. Write test with ```VhsServerTestCase``` trait. 
-
->>>tests/AwesomeClientTest.php<<<
-
-### 2. Run test to record cassette (test will be incomplete)
-
-### 3. Prepare cassette
-
-Remove from cassette unnecessary fields and replace dynamic parts with ```***``` sign.
-
-Cassette ``tests/vhs_cassettes/AwesomeClientTest_testSuccessStory.json`` content:
- 
->>>tests/vhs_cassettes/AwesomeClientTest_testSuccessStory.json<<< 
-
-### 4. Run test again
-
-If the cassette is already exists, then we will check the request and replace the response to the one recorded in the cassette.
-
-## Configuration
-Custom cassettes directory:
-
-In code | phpunit.xml | env vars
-------- | ----------- | --------
-```$this->useVhsCassettesFrom(__DIR__.'./vhs')``` | ```<env name="VHS_DIR" value="./vhs"/>``` | ```VHS_DIR=./vhs ./vendor/bin/phpunit```
